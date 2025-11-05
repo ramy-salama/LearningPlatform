@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.title }} - الدروس</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+            --success-color: #34c759;
+            --warning-color: #ffd700;
+            --danger-color: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .container {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #565e64;
+        }
+
+        .course-header {
+            background: #e8f5e8;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #27ae60;
+        }
+
+        .dark-mode .course-header {
+            background: #1e2a1e;
+            border-color: #27ae60;
+        }
+
+        .course-title {
+            color: var(--text-color);
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .course-meta {
+            color: var(--text-color);
+        }
+
+        .modules-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .module-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .dark-mode .module-card {
+            background: #2d2d2d;
+        }
+
+        .module-title {
+            color: var(--text-color);
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+
+        .module-description {
+            color: var(--text-color);
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .lessons-list {
+            margin-top: 20px;
+        }
+
+        .lessons-title {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .lesson-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border-color);
+            border-right: 3px solid var(--success-color);
+        }
+
+        .dark-mode .lesson-item {
+            background: #2d2d2d;
+        }
+
+        .lesson-title {
+            color: var(--text-color);
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .lesson-type {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .lesson-actions {
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .youtube-btn {
+            background: #ff0000;
+        }
+
+        .youtube-btn:hover {
+            background: #cc0000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .dark-mode .empty-state {
+            color: #ccc;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .course-title {
+                font-size: 1.6em;
+            }
+
+            .lesson-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                margin-right: 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">منصة التعليم</span>
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <a href="/students/dashboard/" class="back-btn">← رجوع للداشبورد</a>
+
+            <div class="course-header">
+                <h1 class="course-title">{{ course.title }}</h1>
+                <div class="course-meta">
+                    <p><strong>المعلم:</strong> {{ course.teacher.name }}</p>
+                    {% if enrollment %}
+                    <p><strong>التقدم:</strong> {{ enrollment.progress }}%</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="modules-section">
+                <h2 class="section-title">الوحدات الدراسية</h2>
+
+                {% if modules %}
+                {% for module in modules %}
+                <div class="module-card">
+                    <h3 class="module-title">الوحدة {{ forloop.counter }}: {{ module.title }}</h3>
+                    {% if module.description %}
+                    <p class="module-description">{{ module.description }}</p>
+                    {% endif %}
+
+                    <div class="lessons-list">
+                        <h4 class="lessons-title">الدروس ({{ module.lessons.count }}) :</h4>
+                        {% for lesson in module.lessons.all %}
+                        <div class="lesson-item">
+                            <div class="lesson-title">الدرس {{ forloop.counter }}: {{ lesson.title }}</div>
+                            <div class="lesson-type">({{ lesson.get_lesson_type_display }})</div>
+
+                            <div class="lesson-actions">
+                                <a href="/courses/{{ course.id }}/lesson/{{ lesson.id }}/" class="btn video-btn">
+                                    📹 مشاهدة الدرس
+                                </a>
+
+                                {% if lesson.lesson_type == 'video' and lesson.youtube_video_id %}
+                                <a href="https://www.youtube.com/watch?v={{ lesson.youtube_video_id }}" target="_blank"
+                                    class="btn youtube-btn">
+                                    YouTube (طوارئ)
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p style="color: #dc3545;">⚠️ لا توجد دروس في هذه الوحدة بعد.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <h3>⚠️ لا توجد وحدات دراسية متاحة بعد</h3>
+                    <p>المعلم لم يضف أي محتوى لهذا الكورس بعد.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+
+</html>

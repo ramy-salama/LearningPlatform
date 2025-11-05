@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم التقارير</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+            --success-color: #34c759;
+            --warning-color: #ffd700;
+            --danger-color: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            color: var(--text-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode .stat-card {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .stat-title {
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .stat-description {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+
+        .report-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .report-section {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .courses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .course-item {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--warning-color);
+            transition: all 0.3s ease;
+        }
+
+        .course-item:hover {
+            border-color: var(--warning-color);
+            transform: translateX(-5px);
+        }
+
+        .course-title {
+            color: var(--text-color);
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+        }
+
+        .loading-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .error-state {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ffcdd2;
+        }
+
+        .dark-mode .error-state {
+            background: #330000;
+            border-color: #ff5252;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .page-title {
+                font-size: 2em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .report-section {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">التقارير والإحصائيات</span>
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">📊 لوحة تحكم التقارير</h1>
+                <p class="page-subtitle">إحصائيات وأداء المنصة</p>
+            </div>
+
+            <!-- البطاقات الإحصائية -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-title">الإيرادات</div>
+                    <div class="stat-number" id="totalRevenue">0</div>
+                    <div class="stat-description">إجمالي الإيرادات</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-title">الطلاب</div>
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-description">إجمالي الطلاب المسجلين</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🏫</div>
+                    <div class="stat-title">المعلمين</div>
+                    <div class="stat-number" id="totalTeachers">0</div>
+                    <div class="stat-description">إجمالي المعلمين</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-title">الكورسات</div>
+                    <div class="stat-number" id="totalCourses">0</div>
+                    <div class="stat-description">إجمالي الكورسات</div>
+                </div>
+            </div>
+
+            <!-- أقسام التقارير -->
+            <div class="report-section">
+                <h2 class="section-title">📈 التقارير التفصيلية</h2>
+                <a href="/reports/financial/" class="btn">
+                    💰 التقرير المالي
+                </a>
+                <a href="/reports/students/" class="btn">
+                    👥 تقرير الطلاب
+                </a>
+                <a href="/reports/courses/" class="btn">
+                    📚 تقرير الكورسات
+                </a>
+            </div>
+
+            <!-- الكورسات الأعلى تقييماً -->
+            <div class="report-section">
+                <h2 class="section-title">⭐ الكورسات الأعلى تقييماً</h2>
+                <div id="topCourses" class="courses-list">
+                    <div class="loading-state">
+                        <div class="loading-icon">⏳</div>
+                        <p>جاري تحميل البيانات...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <script>
+        // جلب البيانات وعرضها
+        async function loadReports() {
+            try {
+                // الإيرادات
+                const financialResponse = await fetch('/reports/financial/json/');
+                const financialData = await financialResponse.json();
+                document.getElementById('totalRevenue').textContent = financialData.total_revenue.toLocaleString() + ' ج.م';
+
+                // الطلاب
+                const studentsResponse = await fetch('/reports/students/json/');
+                const studentsData = await studentsResponse.json();
+                document.getElementById('totalStudents').textContent = studentsData.total_students.toLocaleString();
+
+                // الكورسات
+                const coursesResponse = await fetch('/reports/courses/json/');
+                const coursesData = await coursesResponse.json();
+                document.getElementById('totalCourses').textContent = coursesData.total_courses.toLocaleString();
+
+                // المعلمين - جلب البيانات الفعلية
+                const teachersResponse = await fetch('/reports/teachers/json/');
+                const teachersData = await teachersResponse.json();
+                document.getElementById('totalTeachers').textContent = teachersData.total_teachers.toLocaleString();
+
+                // الكورسات الأعلى تقييماً
+                const topCourses = coursesData.top_rated_courses.slice(0, 5);
+                let topCoursesHTML = '';
+                
+                if (topCourses.length > 0) {
+                    topCoursesHTML = topCourses.map(course => 
+                        `<div class="course-item">
+                            <div class="course-title">${course.title}</div>
+                            <div class="course-rating">
+                                <span>⭐</span>
+                                <span>${course.avg_rating ? course.avg_rating.toFixed(1) : '0.0'}</span>
+                                <span>| 👨‍🏫 ${course.teacher__name || 'غير معروف'}</span>
+                            </div>
+                        </div>`
+                    ).join('');
+                } else {
+                    topCoursesHTML = '<div class="loading-state"><p>لا توجد كورسات بتقييمات حالياً</p></div>';
+                }
+                
+                document.getElementById('topCourses').innerHTML = topCoursesHTML;
+
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                document.getElementById('topCourses').innerHTML = `
+                    <div class="error-state">
+                        <div class="loading-icon">❌</div>
+                        <p>حدث خطأ في تحميل البيانات</p>
+                        <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            loadReports();
+        });
+    </script>
+</body>
+</html>

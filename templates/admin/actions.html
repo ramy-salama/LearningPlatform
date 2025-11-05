@@ -1,0 +1,68 @@
+{% load i18n %}
+<div class="actions">
+  {% block actions %}
+    {% block actions-form %}
+    <!-- نخفي القائمة المنسدلة لكن نختار الحذف تلقائيا -->
+    <div style="display: none;">
+      {% for field in action_form %}
+        {% if field.label %}
+          <label>{{ field.label }} 
+            <select name="action" onchange="this.style.display='none'">
+              {% for choice in field.field.choices %}
+                {% if choice.0 == 'delete_selected' %}
+                  <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </label>
+        {% else %}
+          {{ field }}
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endblock %}
+    
+    {% block actions-submit %}
+    <!-- أزرار الإجراءات -->
+  
+    
+    <button type="submit" class="button delete-btn" 
+            onclick="return confirm('هل أنت متأكد من حذف العناصر المحددة؟')" 
+            style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+      🗑️ {% translate "Delete Selected" %}
+    </button>
+    {% endblock %}
+    
+    {% block actions-counter %}
+    {% if actions_selection_counter %}
+        <span class="action-counter" data-actions-icnt="{{ cl.result_list|length }}">{{ selection_note }}</span>
+        {% if cl.result_count != cl.result_list|length %}
+        <span class="all hidden">{{ selection_note_all }}</span>
+        <span class="question hidden">
+            <a role="button" href="#" title="{% translate "Click here to select the objects across all pages" %}">{% blocktranslate with cl.result_count as total_count %}Select all {{ total_count }} {{ module_name }}{% endblocktranslate %}</a>
+        </span>
+        <span class="clear hidden"><a role="button" href="#">{% translate "Clear selection" %}</a></span>
+        {% endif %}
+    {% endif %}
+    {% endblock %}
+  {% endblock %}
+</div>
+
+<style>
+.delete-btn:hover {
+    background: #c82333 !important;
+    transform: translateY(-1px);
+}
+.activate-btn:hover {
+    background: #218838 !important;
+    transform: translateY(-1px);
+}
+</style>
+
+<script>
+function activateSelected() {
+    // هنا كود التفعيل - تحتاج لتطويره حسب موديلاتك
+    alert('✅ جاري تفعيل العناصر المحددة...');
+    // document.getElementById('changelist-form').submit();
+}
+</script>

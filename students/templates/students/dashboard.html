@@ -1,0 +1,900 @@
+<!-- students/templates/students/dashboard.html - محدث ومصحح -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الطالب</title>
+    <style>
+        /* ===== الأنماط الأساسية المحفوظة ===== */
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            padding: 5px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .dashboard-container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .dashboard-container {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-left: 15px;
+            border: 2px solid var(--border-color);
+        }
+
+        .profile-info h2 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .profile-info p {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .wallet-section {
+            background: #e8f5e8;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border: 1px solid #27ae60;
+        }
+
+        .dark-mode .wallet-section {
+            background: #1e2a1e;
+            border-color: #27ae60;
+        }
+
+        .wallet-section h2 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .balance {
+            font-size: 1.8em;
+            color: #28a745;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section h2 {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-right: 4px solid var(--primary-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .course-card h3 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .course-card p {
+            color: var(--text-color);
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .no-courses {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item strong {
+            color: var(--text-color);
+        }
+
+        .info-item p {
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        /* ===== أنماط نوافذ المراسلة الجديدة والمحسنة ===== */
+        .messaging-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 450px;
+            max-width: 90vw;
+            max-height: 80vh;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-color);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+        .modal-content {
+            padding: 20px;
+            max-height: calc(80vh - 80px);
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            outline: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .send-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .notification-item.unread {
+            background: rgba(52, 152, 219, 0.1);
+            border-right: 3px solid var(--primary-color);
+        }
+
+        .dark-mode .notification-item.unread {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .notification-item:hover {
+            background: var(--bg-color);
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .notification-preview {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 13px;
+            margin-bottom: 4px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notification-time {
+            color: var(--text-color);
+            opacity: 0.6;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .message-status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .message-status.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .message-status.error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .dashboard-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-img {
+                margin-left: 0;
+                margin-bottom: 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-icons {
+                gap: 10px;
+            }
+
+            .icon-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .messaging-modal {
+                width: 95vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">لوحة تحكم الطالب</span>
+        </a>
+        <div class="header-icons">
+            <span style="color: white; font-size: 14px;">مرحباً {{ student.name }}</span>
+
+            <!-- أيقونة جرس الإشعارات -->
+            <button class="icon-btn" onclick="showNotifications()" title="الإشعارات">
+                🔔
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </button>
+
+            <!-- أيقونة المراسلة مع الإدارة -->
+            <button class="icon-btn" onclick="openMessaging()" title="مراسلة الإدارة">
+                ✉️
+            </button>
+
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <a href="/students/logout/" class="logout-btn" title="تسجيل الخروج">⏻</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-container">
+            <div class="logo">🎓</div>
+            <h1>لوحة تحكم الطالب</h1>
+
+            <div class="profile">
+                {% if student.profile_image %}
+                <img src="{{ student.profile_image.url }}" alt="صورة الطالب" class="profile-img">
+                {% endif %}
+                <div class="profile-info">
+                    <h2>مرحباً {{ student.name }}</h2>
+                    <p>{{ student.grade }} - {{ student.year }}</p>
+                </div>
+            </div>
+
+            <div class="wallet-section">
+                <h2>محفظتي الإلكترونية</h2>
+                <p class="balance">رصيدك: {{ student.balance }} جنيه</p>
+                <p>رصيد الإهداءات: {{ student.bonus_balance }} جنيه</p>
+                <p>إجمالي المنصرف: {{ student.total_spent }} جنيه</p>
+
+                <a href="/students/wallet/topup/" class="btn">شحن الرصيد</a>
+                <a href="/courses/" class="btn">تصفح الكورسات</a>
+            </div>
+
+            <div class="section">
+                <h2>كورساتي المسجلة</h2>
+                {% if enrollments %}
+                {% for enrollment in enrollments %}
+                <div class="course-card">
+                    <h3>{{ enrollment.course.title }}</h3>
+                    <p><strong>المعلم:</strong> {{ enrollment.course.teacher.name }}</p>
+                    <p><strong>السعر:</strong> {{ enrollment.amount_paid }} جنيه</p>
+                    <p><strong>تاريخ التسجيل:</strong> {{ enrollment.enrollment_date|date:"Y-m-d" }}</p>
+                    <p><strong>حالة الحجز:</strong>
+                        {% if enrollment.status == 'active' %}
+                        <span style="color: #28a745;">مفعل</span>
+                        {% elif enrollment.status == 'completed' %}
+                        <span style="color: #17a2b8;">مكتمل</span>
+                        {% else %}
+                        <span style="color: #dc3545;">{{ enrollment.get_status_display }}</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>التقدم:</strong> {{ enrollment.progress }}%</p>
+
+                    <a href="/courses/{{ enrollment.course.id }}/" class="btn">عرض الكورس</a>
+                    {% if enrollment.status == 'active' %}
+                    <a href="/courses/{{ enrollment.course.id }}/lessons/" class="btn">بدء التعلم</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="no-courses">
+                    <p>لا توجد كورسات مسجلة بعد.</p>
+                    <a href="/courses/" class="btn">تصفح الكورسات</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h2>معلوماتي</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>رقم الهاتف:</strong>
+                        <p>{{ student.phone_number }}</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>رقم ولي الأمر:</strong>
+                        <p>{{ student.parent_phone }}</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>محل الإقامة:</strong>
+                        <p>{{ student.residence }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        // تحميل الوضع المحفوظ
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            // تحميل عدد الإشعارات غير المقروءة
+            loadUnreadCount();
+        });
+
+        function loadUnreadCount() {
+            fetch(`/messaging/unread/student/{{ student.id }}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('notificationBadge');
+                    if (data.unread_count > 0) {
+                        badge.textContent = data.unread_count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                });
+        }
+
+        function createModalOverlay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.onclick = closeAllModals;
+            document.body.appendChild(overlay);
+            return overlay;
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.messaging-modal, .modal-overlay').forEach(el => {
+                el.remove();
+            });
+        }
+
+        function showNotifications() {
+            closeAllModals();
+            const overlay = createModalOverlay();
+            
+            const notificationsHTML = `
+                <div class="messaging-modal">
+                    <div class="modal-header">
+                        <h3>الإشعارات والرسائل</h3>
+                        <button class="close-btn" onclick="closeAllModals()">✕</button>
+                    </div>
+                    <div class="modal-content">
+                        <div class="loading">جاري تحميل الإشعارات...</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', notificationsHTML);
+            
+            // تحميل الإشعارات الحقيقية
+            fetch('/students/notifications/')
+                .then(response => response.json())
+                .then(data => {
+                    const modalContent = document.querySelector('.messaging-modal .modal-content');
+                    if (data.messages && data.messages.length > 0) {
+                        let notificationsHTML = '';
+                        data.messages.forEach(msg => {
+                            notificationsHTML += `
+                                <div class="notification-item ${msg.is_read ? '' : 'unread'}" onclick="markAsRead(${msg.id})">
+                                    <div class="notification-icon">📨</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">${msg.title}</div>
+                                        <div class="notification-preview">${msg.content}</div>
+                                        <div class="notification-time">${msg.created_at}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        modalContent.innerHTML = notificationsHTML;
+                    } else {
+                        modalContent.innerHTML = '<div class="empty-state">لا توجد إشعارات</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                    document.querySelector('.messaging-modal .modal-content').innerHTML = '<div class="empty-state">حدث خطأ في تحميل الإشعارات</div>';
+                });
+        }
+
+        function openMessaging() {
+            closeAllModals();
+            const overlay = createModalOverlay();
+            
+            const messagingHTML = `
+                <div class="messaging-modal">
+                    <div class="modal-header">
+                        <h3>مراسلة الإدارة</h3>
+                        <button class="close-btn" onclick="closeAllModals()">✕</button>
+                    </div>
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <label>عنوان الرسالة:</label>
+                            <input type="text" id="message-title" class="form-input" placeholder="عنوان الرسالة" required>
+                        </div>
+                        <div class="form-group">
+                            <label>محتوى الرسالة:</label>
+                            <textarea id="message-content" class="form-textarea" placeholder="اكتب رسالتك للإدارة هنا..." rows="5" required></textarea>
+                        </div>
+                        <button class="send-btn" onclick="sendStudentMessage()">إرسال الرسالة</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', messagingHTML);
+        }
+
+        function sendStudentMessage() {
+            const title = document.getElementById('message-title').value;
+            const content = document.getElementById('message-content').value;
+
+            if (!title || !content) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+
+            const messageData = {
+                title: title,
+                content: content
+            };
+
+            fetch('/students/send-message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(messageData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('تم إرسال الرسالة بنجاح');
+                    closeAllModals();
+                } else {
+                    alert('حدث خطأ في الإرسال: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ في الإرسال');
+            });
+        }
+
+        function markAsRead(messageId) {
+            fetch(`/messaging/read/${messageId}/`, {
+                method: 'POST'
+            })
+            .then(() => {
+                loadUnreadCount();
+                closeAllModals();
+            })
+            .catch(error => {
+                console.error('Error marking as read:', error);
+            });
+        }
+    </script>
+</body>
+</html>

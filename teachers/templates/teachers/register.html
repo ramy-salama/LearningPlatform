@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل معلم جديد</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .login-container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .login-container {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-card {
+            padding: 0;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: right;
+        }
+
+        .form-section h3 {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .checkbox-group {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 5px;
+            background: var(--card-bg);
+            text-align: right;
+        }
+
+        .checkbox-group label {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: normal;
+            color: var(--text-color);
+        }
+
+        .submit-button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--hover-color);
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #fcc;
+        }
+
+        .dark-mode .error {
+            background: #442222;
+            color: #ff6b6b;
+            border-color: #663333;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">تسجيل معلم جديد</span>
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="main-content">
+        <div class="login-container">
+            <div class="logo">🎓</div>
+            <h1>تسجيل معلم جديد</h1>
+            
+            {% if error %}
+                <div class="error">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- البيانات الشخصية -->
+                <div class="form-section">
+                    <h3>📝 البيانات الشخصية</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الاسم الثلاثي:</label>
+                            <input type="text" name="name" required placeholder="أدخل الاسم الثلاثي">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">رقم الهاتف:</label>
+                            <input type="text" name="phone_number" required placeholder="أدخل رقم الهاتف">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">البريد الإلكتروني:</label>
+                            <input type="email" name="email" required placeholder="أدخل البريد الإلكتروني">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">كلمة المرور:</label>
+                            <input type="password" name="password" required placeholder="أدخل كلمة المرور">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">العنوان:</label>
+                        <input type="text" name="address" required placeholder="أدخل العنوان بالتفصيل">
+                    </div>
+                </div>
+
+                <!-- الملفات -->
+                <div class="form-section">
+                    <h3>📁 الملفات المطلوبة</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الصورة الشخصية:</label>
+                            <input type="file" name="profile_image" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">صورة الشهادة:</label>
+                            <input type="file" name="certificate_image" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المؤهلات العلمية -->
+                <div class="form-section">
+                    <h3>🎓 المؤهلات العلمية</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">التخصص الرئيسي:</label>
+                            <input type="text" name="specialization" required placeholder="مثال: رياضيات، فيزياء">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">التخصص الدقيق:</label>
+                            <input type="text" name="major" required placeholder="مثال: جبر، تفاضل وتكامل">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">المؤهل العلمي:</label>
+                            <select name="degree" required>
+                                <option value="">-- اختر المؤهل العلمي --</option>
+                                <option value="bachelor">بكالوريوس</option>
+                                <option value="master">ماجستير</option>
+                                <option value="phd">دكتوراه</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الشهادات الإضافية:</label>
+                            <textarea name="certificates" rows="3"
+                                placeholder="اذكر الشهادات الإضافية إن وجدت..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخبرات -->
+                <div class="form-section">
+                    <h3>💼 الخبرات</h3>
+                    <div class="form-group">
+                        <label class="required">الخبرات السابقة:</label>
+                        <textarea name="experience" required placeholder="صف خبراتك السابقة في التدريس..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">السيرة الذاتية:</label>
+                        <textarea name="bio" required placeholder="اكتب سيرتك الذاتية بشكل مختصر..."></textarea>
+                    </div>
+                </div>
+
+                <!-- المراحل التعليمية -->
+                <div class="form-section">
+                    <h3>📚 المراحل التعليمية</h3>
+                    <div class="form-group">
+                        <label class="required">المراحل التعليمية:</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" name="teaching_levels" value="primary" id="primary">
+                            <label for="primary"> المرحلة الابتدائية</label><br>
+
+                            <input type="checkbox" name="teaching_levels" value="preparatory" id="preparatory">
+                            <label for="preparatory"> المرحلة الإعدادية</label><br>
+
+                            <input type="checkbox" name="teaching_levels" value="secondary" id="secondary">
+                            <label for="secondary"> المرحلة الثانوية</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- البيانات المالية -->
+                <div class="form-section">
+                    <h3>💰 البيانات المالية</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">طريقة استلام ربحك:</label>
+                            <select name="payment_method" id="payment_method" required>
+                                <option value="">-- اختر طريقة الاستلام --</option>
+                                <option value="vodafone_cash">فودافون كاش</option>
+                                <option value="insta_pay">انستا باي</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">نسبة الربح من الكورس:</label>
+                            <input type="number" name="profit_percentage" value="50" min="0" max="100" required>
+                            <span>%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="account_number_field" style="display: none;">
+                        <label class="required" id="account_label">رقم الحساب/المحفظة:</label>
+                        <input type="text" name="account_number" placeholder="أدخل رقم المحفظة">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">تقديم طلب التسجيل</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <script>
+        document.getElementById('payment_method').addEventListener('change', function () {
+            var accountField = document.getElementById('account_number_field');
+            var accountLabel = document.getElementById('account_label');
+
+            if (this.value === 'vodafone_cash') {
+                accountLabel.textContent = 'رقم فودافون كاش:';
+                accountField.style.display = 'block';
+            } else if (this.value === 'insta_pay') {
+                accountLabel.textContent = 'رقم انستا باي:';
+                accountField.style.display = 'block';
+            } else {
+                accountField.style.display = 'none';
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            var checkboxes = document.querySelectorAll('input[name="teaching_levels"]:checked');
+            if (checkboxes.length === 0) {
+                e.preventDefault();
+                alert('يرجى اختيار مرحلة تعليمية واحدة على الأقل');
+            }
+        });
+
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        // تحميل الوضع المحفوظ
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

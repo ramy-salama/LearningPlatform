@@ -1,0 +1,799 @@
+<!-- templates/admin/base_site.html - محدث ومصحح -->
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}
+    {{ title }} | {% trans 'نظام الإدارة' %}
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    /* ===== تصميم الهيدر ===== */
+    #header {
+        background: #0f1521;
+        color: white;
+        border-bottom: 3px solid #5a67d8;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    #branding h1 {
+        color: white;
+        font-weight: 700;
+        font-size: 24px;
+    }
+
+    #branding h1 a {
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #branding h1 a:hover {
+        color: #e2e8f0;
+        transform: translateY(-1px);
+    }
+
+    #branding h1 a:before {
+        content: "🎯";
+        font-size: 28px;
+    }
+
+    /* ===== أدوات المستخدم ===== */
+    #user-tools {
+        color: white;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #user-tools a:link,
+    #user-tools a:visited {
+        color: #e2e8f0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 15px;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    #user-tools a:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-1px);
+    }
+
+    #user-tools strong {
+        color: white;
+        font-weight: 600;
+    }
+
+    /* ===== زر تسجيل الخروج ===== */
+    #logout-form button[type="submit"] {
+        background: rgba(255, 75, 75, 0.2) !important;
+        color: #ff6b6b !important;
+        border: 1px solid rgba(255, 107, 107, 0.5) !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin: 0 !important;
+    }
+
+    #logout-form button[type="submit"]:hover {
+        background: rgba(255, 75, 75, 0.3) !important;
+        color: #ff5252 !important;
+        border-color: rgba(255, 82, 82, 0.7) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(255, 75, 75, 0.2) !important;
+    }
+
+    #logout-form button[type="submit"]:before {
+        content: "⏻" !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+    }
+
+    /* إزالة الشرطة المائلة بين الروابط */
+    #user-tools a:not(:last-child):after {
+        display: none !important;
+    }
+
+    /* زر التوجل */
+    #toggle-nav-sidebar {
+        background: #667eea !important;
+        border: none !important;
+        border-radius: 0 6px 6px 0 !important;
+    }
+
+    #toggle-nav-sidebar:hover {
+        background: #5a67d8 !important;
+    }
+
+    /* ===== تحسينات عامة ===== */
+    .breadcrumbs {
+        background: #f7fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 12px 20px;
+    }
+
+    .breadcrumbs a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumbs a:hover {
+        color: #5a67d8;
+        text-decoration: underline;
+    }
+
+    #user-tools br,
+    #user-tools .separator {
+        display: none;
+    }
+
+    /* ===== أيقونات المراسلة والإشعارات ===== */
+    .admin-icons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .admin-icon-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .admin-icon-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.1);
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: #e74c3c;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* ===== أنماط نوافذ المراسلة الجديدة ===== */
+    .messaging-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 500px;
+        max-width: 90vw;
+        max-height: 80vh;
+        z-index: 10000;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: #2d3748;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 5px;
+        color: #718096;
+        transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+        color: #e53e3e;
+    }
+
+    .modal-content {
+        padding: 20px;
+        max-height: calc(80vh - 80px);
+        overflow-y: auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 14px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .send-btn {
+        width: 100%;
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .send-btn:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .send-btn:active {
+        transform: translateY(0);
+    }
+
+    /* ===== أنماط التبويبات ===== */
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8f9fa;
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #718096;
+        transition: all 0.3s ease;
+        border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background: white;
+    }
+
+    .tab-btn:hover:not(.active) {
+        background: #e2e8f0;
+        color: #4a5568;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 0;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* ===== أنماط قوائم الرسائل ===== */
+    .notifications-list, .messages-list {
+        padding: 0;
+    }
+
+    .notification-item, .message-item {
+        display: flex;
+        gap: 12px;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s;
+        cursor: pointer;
+    }
+
+    .notification-item:hover, .message-item:hover {
+        background: #f8f9fa;
+    }
+
+    .notification-item.unread, .message-item.unread {
+        background: #f0f7ff;
+        border-right: 3px solid #667eea;
+    }
+
+    .notification-icon, .message-icon {
+        font-size: 20px;
+        color: #667eea;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .notification-content, .message-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notification-title, .message-title {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+
+    .notification-preview, .message-preview {
+        color: #718096;
+        font-size: 13px;
+        margin-bottom: 4px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .notification-time, .message-time {
+        color: #a0aec0;
+        font-size: 11px;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #a0aec0;
+    }
+
+    .empty-state .icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    /* ===== رسائل الخطأ والنجاح ===== */
+    .message-status {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .message-status.success {
+        background: #f0fff4;
+        color: #38a169;
+        border: 1px solid #9ae6b4;
+    }
+
+    .message-status.error {
+        background: #fff5f5;
+        color: #e53e3e;
+        border: 1px solid #fc8181;
+    }
+
+    /* ===== الظل الخلفي للنوافذ ===== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">{% trans 'نظام الإدارة' %}</a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block usertools %}
+{% if has_permission %}
+<div id="user-tools">
+    {% block welcome-msg %}
+        {% translate 'Welcome,' %}
+        <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+    {% endblock %}
+
+    <div class="admin-icons">
+        <!-- 🔔 إشعارات -->
+        <button class="admin-icon-btn" onclick="showNotifications()" title="الإشعارات">
+            🔔
+            <span class="notification-badge" id="adminNotificationBadge">{{ unread_count }}</span>
+        </button>
+
+        <!-- ✉️ مراسلة فردية -->
+        <button class="admin-icon-btn" onclick="openIndividualMessaging()" title="مراسلة فردية">
+            ✉️
+        </button>
+    </div>
+
+    {% block userlinks %}
+        {% if site_url %}
+            <a href="{{ site_url }}">{% translate 'View site' %}</a>
+        {% endif %}
+        {% if user.is_active and user.is_staff %}
+            {% url 'django-admindocs-docroot' as docsroot %}
+            {% if docsroot %}
+                <a href="{{ docsroot }}">{% translate 'Documentation' %}</a>
+            {% endif %}
+        {% endif %}
+        {% if user.has_usable_password %}
+            <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a>
+        {% endif %}
+
+        <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+            {% csrf_token %}
+            <button type="submit">{% translate 'Log out' %}</button>
+        </form>
+
+        {% include "admin/color_theme_toggle.html" %}
+    {% endblock %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extrahead %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        loadAdminUnreadCount();
+    });
+
+    function loadAdminUnreadCount() {
+        fetch('/messaging/unread/admin/1/')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('adminNotificationBadge');
+                if (data.unread_count > 0) {
+                    badge.textContent = data.unread_count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading admin notifications:', error);
+            });
+    }
+
+    function createModalOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.onclick = closeAllModals;
+        document.body.appendChild(overlay);
+        return overlay;
+    }
+
+    function closeAllModals() {
+        document.querySelectorAll('.messaging-modal, .modal-overlay').forEach(el => {
+            el.remove();
+        });
+    }
+
+    function showNotifications() {
+        closeAllModals();
+        const overlay = createModalOverlay();
+        
+        const notificationsHTML = `
+            <div class="messaging-modal">
+                <div class="modal-header">
+                    <h3>الإشعارات والرسائل</h3>
+                    <button class="close-btn" onclick="closeAllModals()">✕</button>
+                </div>
+                <div class="modal-content">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('notifications')">الإشعارات</button>
+                        <button class="tab-btn" onclick="switchTab('messages')">الرسائل</button>
+                    </div>
+                    <div id="notifications-tab" class="tab-content active">
+                        <div class="notifications-list" id="notificationsList">
+                            <div class="loading">جاري تحميل الإشعارات...</div>
+                        </div>
+                    </div>
+                    <div id="messages-tab" class="tab-content">
+                        <div class="messages-list" id="messagesList">
+                            <div class="loading">جاري تحميل الرسائل...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', notificationsHTML);
+        loadNotifications();
+    }
+
+    function openBroadcastMessaging() {
+        closeAllModals();
+        const overlay = createModalOverlay();
+        
+        const messagingHTML = `
+            <div class="messaging-modal">
+                <div class="modal-header">
+                    <h3>مراسلة جماعية</h3>
+                    <button class="close-btn" onclick="closeAllModals()">✕</button>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>نوع المراسلة:</label>
+                        <select id="message-type" class="form-select" onchange="toggleMessageType()">
+                            <option value="bulk">مراسلة جماعية</option>
+                            <option value="individual">مراسلة فردية</option>
+                        </select>
+                    </div>
+                    <div id="bulk-message" class="message-type-content">
+                        <div class="form-group">
+                            <label>المستلمون:</label>
+                            <select id="bulk-recipient-type" class="form-select" onchange="toggleBulkOptions()">
+                                <option value="all_students">كل الطلاب</option>
+                                <option value="course_students">طلاب كورس محدد</option>
+                            </select>
+                        </div>
+                        <div id="course-selector" class="form-group hidden">
+                            <label>اختر الكورس:</label>
+                            <select id="course-id" class="form-select">
+                                <option value="">جاري تحميل الكورسات...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="individual-message" class="message-type-content hidden">
+                        <div class="form-group">
+                            <label>اختر الطالب:</label>
+                            <select id="student-id" class="form-select">
+                                <option value="">جاري تحميل الطلاب...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>عنوان الرسالة:</label>
+                        <input type="text" id="message-title" class="form-input" placeholder="عنوان الرسالة" required>
+                    </div>
+                    <div class="form-group">
+                        <label>محتوى الرسالة:</label>
+                        <textarea id="message-content" class="form-textarea" placeholder="اكتب محتوى الرسالة هنا..." rows="5" required></textarea>
+                    </div>
+                    <button class="send-btn" onclick="sendAdminMessage()">إرسال الرسالة</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', messagingHTML);
+        loadFormData();
+    }
+
+    function openIndividualMessaging() {
+        openBroadcastMessaging();
+        document.getElementById('message-type').value = 'individual';
+        toggleMessageType();
+    }
+
+    function loadFormData() {
+        // تحميل قائمة الكورسات
+        fetch('/admins/courses-list/')
+            .then(response => response.json())
+            .then(data => {
+                const courseSelect = document.getElementById('course-id');
+                courseSelect.innerHTML = '<option value="">اختر الكورس</option>';
+                data.courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    courseSelect.appendChild(option);
+                });
+            });
+
+        // تحميل قائمة الطلاب
+        fetch('/admins/students-list/')
+            .then(response => response.json())
+            .then(data => {
+                const studentSelect = document.getElementById('student-id');
+                studentSelect.innerHTML = '<option value="">اختر الطالب</option>';
+                data.students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.name} - ${student.phone_number}`;
+                    studentSelect.appendChild(option);
+                });
+            });
+    }
+
+    function toggleMessageType() {
+        const type = document.getElementById('message-type').value;
+        document.getElementById('bulk-message').classList.toggle('hidden', type !== 'bulk');
+        document.getElementById('individual-message').classList.toggle('hidden', type !== 'individual');
+    }
+
+    function toggleBulkOptions() {
+        const type = document.getElementById('bulk-recipient-type').value;
+        document.getElementById('course-selector').classList.toggle('hidden', type !== 'course_students');
+    }
+
+    function sendAdminMessage() {
+        const messageType = document.getElementById('message-type').value;
+        const title = document.getElementById('message-title').value;
+        const content = document.getElementById('message-content').value;
+
+        if (!title || !content) {
+            alert('يرجى ملء جميع الحقول');
+            return;
+        }
+
+        const messageData = {
+            title: title,
+            content: content,
+            sender_type: 'admin',
+            sender_id: 1
+        };
+
+        if (messageType === 'bulk') {
+            messageData.receiver_type = document.getElementById('bulk-recipient-type').value;
+            if (messageData.receiver_type === 'course_students') {
+                const courseId = document.getElementById('course-id').value;
+                if (!courseId) {
+                    alert('يرجى اختيار الكورس');
+                    return;
+                }
+                messageData.course_id = courseId;
+            }
+        } else {
+            const studentId = document.getElementById('student-id').value;
+            if (!studentId) {
+                alert('يرجى اختيار الطالب');
+                return;
+            }
+            messageData.receiver_type = 'student';
+            messageData.receiver_id = studentId;
+        }
+
+        fetch('/messaging/send/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('تم إرسال الرسالة بنجاح');
+                closeAllModals();
+            } else {
+                alert('حدث خطأ في الإرسال: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ في الإرسال');
+        });
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(tabName + '-tab').classList.add('active');
+        event.target.classList.add('active');
+        
+        if (tabName === 'notifications') {
+            loadNotifications();
+        } else {
+            loadMessages();
+        }
+    }
+
+    function loadNotifications() {
+        const notificationsList = document.getElementById('notificationsList');
+        notificationsList.innerHTML = '<div class="loading">جاري تحميل الإشعارات...</div>';
+        
+        
+    }
+
+    function loadMessages() {
+        const messagesList = document.getElementById('messagesList');
+        messagesList.innerHTML = '<div class="loading">جاري تحميل الرسائل...</div>';
+        
+        // محاكاة تحميل الرسائل
+        setTimeout(() => {
+            messagesList.innerHTML = `
+                <div class="message-item unread">
+                    <div class="message-icon">👤</div>
+                    <div class="message-content">
+                        <div class="message-title">رسالة من الطالب أحمد</div>
+                        <div class="message-preview">أود الاستفسار عن موعد الامتحان النهائي...</div>
+                        <div class="message-time">منذ ٣٠ دقيقة</div>
+                    </div>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">✉️</div>
+                    <p>لا توجد المزيد من الرسائل</p>
+                </div>
+            `;
+        }, 1000);
+    }
+</script>
+{% endblock %}

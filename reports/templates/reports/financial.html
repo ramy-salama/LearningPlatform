@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>التقرير المالي</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+            --success-color: #34c759;
+            --warning-color: #ffd700;
+            --danger-color: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .container {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .back-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .page-title {
+            color: var(--text-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #e8f5e8;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #28a745;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode .stat-card {
+            background: #1e2a1e;
+            border-color: #28a745;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .stat-title {
+            color: var(--text-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            color: var(--success-color);
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .section-title {
+            color: var(--text-color);
+            margin: 40px 0 25px 0;
+            font-size: 1.5em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .courses-revenue {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .course-revenue-item {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .course-revenue-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+
+        .course-title {
+            color: var(--text-color);
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-revenue {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .revenue-amount {
+            color: var(--success-color);
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+        }
+
+        .loading-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .error-state {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ffcdd2;
+        }
+
+        .dark-mode .error-state {
+            background: #330000;
+            border-color: #ff5252;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .page-title {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-revenue {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">💰</span>
+            <span class="logo-text">التقارير المالية</span>
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <a href="/reports/" class="back-btn">← العودة للوحة التقارير</a>
+            <h1 class="page-title">💰 التقرير المالي</h1>
+            
+            <div id="financialData">
+                <div class="loading-state">
+                    <div class="loading-icon">⏳</div>
+                    <p>جاري تحميل البيانات...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <script>
+        async function loadFinancialData() {
+            try {
+                const response = await fetch('/reports/financial/json/');
+                const data = await response.json();
+                
+                const html = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-title">إجمالي الإيرادات</div>
+                            <div class="stat-number">${data.total_revenue.toLocaleString()} ج.م</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-title">إيرادات الشهر الحالي</div>
+                            <div class="stat-number">${data.monthly_revenue.toLocaleString()} ج.م</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">📊 الإيرادات حسب الكورس</h3>
+                    <div class="courses-revenue">
+                        ${data.course_revenues.map(course => `
+                            <div class="course-revenue-item">
+                                <div class="course-title">${course.title}</div>
+                                <div class="course-revenue">
+                                    <span>👨‍🏫 ${course.teacher_name || 'غير معروف'}</span>
+                                    <span class="revenue-amount">${(course.total_revenue || 0).toLocaleString()} ج.م</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                document.getElementById('financialData').innerHTML = html;
+            } catch (error) {
+                document.getElementById('financialData').innerHTML = `
+                    <div class="error-state">
+                        <p>❌ حدث خطأ في تحميل البيانات</p>
+                        <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">يرجى المحاولة مرة أخرى</p>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            loadFinancialData();
+        });
+    </script>
+</body>
+</html>

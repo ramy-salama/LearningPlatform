@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ lesson.title }} - {{ course.title }}</title>
+    <style>
+        :root {
+            --bg-color: #f2f2f2;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #3498db;
+            --hover-color: #2980b9;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        .dark-mode {
+            --bg-color: #060a10;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --header-bg: #111827;
+            --border-color: #404040;
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+            --success-color: #34c759;
+            --warning-color: #ffd700;
+            --danger-color: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(255, 252, 252, 0.1);
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .home-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .container {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .lesson-header {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .lesson-title {
+            color: var(--text-color);
+            font-size: 1.3em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .back-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: var(--hover-color);
+        }
+
+        .video-container {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            display: block;
+        }
+
+        .youtube-overlay {
+            position: absolute;
+            z-index: 9999;
+            pointer-events: auto;
+            background: transparent;
+        }
+
+        .overlay-top-right {
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 60px;
+        }
+
+        .overlay-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 60px;
+            transition: all 0.5s ease-in-out;
+            cursor: pointer;
+        }
+
+        .overlay-bottom-right.shrink {
+            width: 120px !important;
+            height: 40px !important;
+        }
+
+        .message {
+            background: #ffeeba;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #ffc107;
+        }
+
+        .dark-mode .message {
+            background: #332701;
+            border-color: #ffc107;
+        }
+
+        .floating-phone {
+            opacity: 50%;
+            position: fixed;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 10000;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transition: all 3s ease-in-out;
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .lesson-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            iframe {
+                height: 400px;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            iframe {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">منصة التعليم</span>
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="lesson-header">
+                <h3 class="lesson-title">{{ lesson.module.title }} : {{ lesson.title }}</h3>
+                <a href="/courses/{{ course.id }}/lessons/" class="back-btn">← رجوع إلى قائمة الدروس</a>
+            </div>
+
+            {% if has_access and video_url %}
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <div class="youtube-overlay overlay-top-right"></div>
+                    <div class="youtube-overlay overlay-bottom-right" id="bottomOverlay"></div>
+                    
+                    <iframe src="{{ video_url }}"
+                        title="{{ lesson.title }}"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            {% elif has_access and not video_url %}
+            <div class="message">⚠️ لا يوجد فيديو متاح لهذا الدرس.</div>
+            {% else %}
+            <div class="message">🚫 غير مصرح لك بمشاهدة هذا الدرس. {{ access_message }}</div>
+            {% endif %}
+
+            {% if access_message %}
+                <div class="message">{{ access_message }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+    </footer>
+
+    <!-- عنصر رقم الهاتف المتحرك -->
+    {% if student and student.phone_number %}
+    <div class="floating-phone" id="phoneNumber">{{ student.phone_number }}</div>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneElement = document.getElementById('phoneNumber');
+            const bottomOverlay = document.getElementById('bottomOverlay');
+            
+            if (bottomOverlay) {
+                // دالة لتقليص الـ overlay
+                function shrinkOverlay() {
+                    bottomOverlay.classList.add('shrink');
+                    setTimeout(() => {
+                        bottomOverlay.style.pointerEvents = 'auto';
+                    }, 500);
+                }
+
+                // استماع للضغط على الـ overlay السفلي
+                bottomOverlay.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    shrinkOverlay();
+                });
+
+                bottomOverlay.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    shrinkOverlay();
+                });
+            }
+
+            if (phoneElement) {
+                function getRandomPosition() {
+                    const maxX = window.innerWidth - phoneElement.offsetWidth;
+                    const maxY = window.innerHeight - phoneElement.offsetHeight;
+                    
+                    const randomX = Math.floor(Math.random() * maxX);
+                    const randomY = Math.floor(Math.random() * maxY);
+                    
+                    return { x: randomX, y: randomY };
+                }
+                
+                function moveRandomly() {
+                    const newPos = getRandomPosition();
+                    
+                    phoneElement.style.left = newPos.x + 'px';
+                    phoneElement.style.top = newPos.y + 'px';
+                    
+                    const colors = ['#ff0000', '#ff4444', '#ff6666', '#ff8888'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    phoneElement.style.color = randomColor;
+                    
+                    const sizes = ['16px', '18px', '20px', '22px'];
+                    const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+                    phoneElement.style.fontSize = randomSize;
+                }
+
+                setInterval(moveRandomly, 5000);
+                moveRandomly();
+                
+                document.addEventListener('mousemove', function() {
+                    if (Math.random() > 0.7) {
+                        moveRandomly();
+                    }
+                });
+            }
+        });
+
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

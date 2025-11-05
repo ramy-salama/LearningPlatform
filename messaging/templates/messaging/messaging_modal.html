@@ -1,0 +1,202 @@
+<div class="messaging-modal">
+
+    <!-- ===== رأس النافذة ===== -->
+    <div class="modal-header">
+        <h3 id="modal-title">مراسلة جماعية</h3>
+        <button class="close-btn" onclick="closeMessagingModal()">✕</button>
+    </div>
+
+    <!-- ===== محتوى النافذة ===== -->
+    <div class="modal-content">
+
+        <!-- عنوان الرسالة -->
+        <div class="form-group">
+            <label>العنوان:</label>
+            <input type="text" id="message-title" class="form-input" placeholder="عنوان الرسالة">
+        </div>
+
+        <!-- محتوى الرسالة -->
+        <div class="form-group">
+            <label>المحتوى:</label>
+            <textarea id="message-content" class="form-textarea" placeholder="اكتب محتوى الرسالة هنا..." rows="5"></textarea>
+        </div>
+
+        <!-- المستلمون -->
+        <div class="form-group" id="recipient-selector">
+            <label>المستلمون:</label>
+            <select id="recipient-type" class="form-select" onchange="toggleRecipientOptions()">
+                <option value="all_students">كل الطلاب</option>
+                <option value="course_students">طلاب كورس محدد</option>
+                <option value="individual">طالب محدد</option>
+            </select>
+
+            <!-- اختيار كورس -->
+            <div id="course-selector" class="hidden">
+                <select id="course-id" class="form-select">
+                    <option value="">اختر الكورس</option>
+                </select>
+            </div>
+
+            <!-- اختيار طالب -->
+            <div id="student-selector" class="hidden">
+                <select id="student-id" class="form-select">
+                    <option value="">اختر الطالب</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="send-btn" onclick="sendMessage()">إرسال الرسالة</button>
+    </div>
+</div>
+
+<!-- ===== التنسيق ===== -->
+<style>
+    .messaging-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        width: 500px;
+        max-width: 90vw;
+        z-index: 1000;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: #333;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .form-textarea {
+        resize: vertical;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .send-btn {
+        width: 100%;
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .send-btn:hover {
+        background: #0056b3;
+    }
+</style>
+
+<!-- ===== سكربت التحكم ===== -->
+<script>
+    function closeMessagingModal() {
+        document.querySelector('.messaging-modal').remove();
+    }
+
+    function toggleRecipientOptions() {
+        const type = document.getElementById('recipient-type').value;
+        document.getElementById('course-selector').classList.add('hidden');
+        document.getElementById('student-selector').classList.add('hidden');
+
+        if (type === 'course_students') {
+            document.getElementById('course-selector').classList.remove('hidden');
+        } else if (type === 'individual') {
+            document.getElementById('student-selector').classList.remove('hidden');
+        }
+    }
+
+    function sendMessage() {
+        const title = document.getElementById('message-title').value;
+        const content = document.getElementById('message-content').value;
+        const recipientType = document.getElementById('recipient-type').value;
+
+        if (!title || !content) {
+            alert('يرجى ملء جميع الحقول');
+            return;
+        }
+
+        const messageData = {
+            title: title,
+            content: content,
+            recipient_type: recipientType,
+            sender_type: 'admin',
+            sender_id: 1
+        };
+
+        if (recipientType === 'course_students') {
+            messageData.course_id = document.getElementById('course-id').value;
+        } else if (recipientType === 'individual') {
+            messageData.receiver_id = document.getElementById('student-id').value;
+        }
+
+        fetch('/messaging/send/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('تم إرسال الرسالة بنجاح');
+                closeMessagingModal();
+            } else {
+                alert('حدث خطأ في الإرسال');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ في الإرسال');
+        });
+    }
+</script>
+
