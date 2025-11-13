@@ -13,18 +13,22 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow:#d8dada;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section:#222b3d;
+            --shadow:#28505d;
         }
 
         body {
@@ -43,7 +47,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .header-controls {
@@ -54,7 +58,6 @@
 
         .home-link {
             text-decoration: none;
-            color: white !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -87,8 +90,7 @@
         .icon-btn {
             background: none;
             border: none;
-            color: white;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             padding: 8px;
             width: 45px;
@@ -104,6 +106,7 @@
         .icon-btn:hover {
             background-color: rgba(255, 255, 255, 0.1);
             transform: scale(1.1);
+            rotate: -30deg;
         }
 
         .notification-badge {
@@ -125,20 +128,23 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            padding: 8px;
             border-radius: 50%;
+            padding: 5px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .theme-toggle:hover {
             background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
+            transform: scale(1.2);
+            rotate: -45deg;
         }
-
         .nav-icons {
             display: flex;
             gap: 15px;
@@ -170,12 +176,30 @@
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            border: 2px solid white;
+            border: 4px solid var(--primary-color);
             object-fit: cover;
         }
 
-        .logout {
-            font-size: 16px;
+        .logout-btn {
+            background: none;
+            text-decoration: none;
+            border: none;
+            color: #ffffff;
+            font-size: 45px;
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.2);
+            rotate: -45deg;
+            color: var(--hover-color);
         }
 
         .dashboard {
@@ -188,9 +212,10 @@
         }
 
         .card {
+            height: 400px;
             background: var(--card-bg);
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px var(--shadow);
             padding: 25px;
             border: 1px solid var(--border-color);
         }
@@ -214,7 +239,7 @@
             border-radius: 50%;
             display: block;
             margin: 0 auto 15px;
-            border: 3px solid var(--border-color);
+            border: 4px solid var(--primary-color);
         }
 
         .stats p,
@@ -229,10 +254,16 @@
             color: white;
             text-align: center;
             padding: 15px;
-            margin-top: 40px;
             font-size: 14px;
+            margin-top: 80px;
         }
-
+        footer span {
+        
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+        }
         /* ===== أنماط نوافذ المراسلة الجديدة والمحسنة ===== */
         .messaging-modal {
             position: fixed;
@@ -494,7 +525,7 @@
     <div class="header">
         <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">لوحة تحكم المعلم</span>
+            <span class="logo-text">الرئيسية</span>
         </a>
         <div class="header-controls">
             <div class="header-icons">
@@ -519,7 +550,7 @@
                         👤
                         {% endif %}
                     </a>
-                    <a href="/teachers/logout/" class="nav-icon logout" data-tooltip="تسجيل الخروج">⏻</a>
+                    <a href="/teachers/logout/" class="logout-btn" data-tooltip="تسجيل الخروج">⎋</a>
                 </div>
             </div>
         </div>
@@ -554,7 +585,7 @@
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+         <span>  درس أونلاين </span>   جميع الحقوق محفوظة  © 2025
     </footer>
 
     <script>

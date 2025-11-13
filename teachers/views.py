@@ -8,6 +8,7 @@ from .models import Teacher
 from courses.models import Course
 from enrollments.models import Enrollment
 from messaging.models import Message
+from decimal import Decimal
 
 # 🟢 دوال المعلم الأساسية (محفوظة مع تحسينات الأداء)
 def teacher_register(request):
@@ -120,7 +121,7 @@ def teacher_dashboard(request):
         
         total_earnings = earnings_data['total_earnings'] or 0
         if total_earnings:
-            total_earnings = total_earnings * (teacher.profit_percentage / 100)
+            total_earnings = total_earnings * (Decimal(teacher.profit_percentage) / Decimal(100))
 
         context = {
             'teacher': teacher,

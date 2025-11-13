@@ -11,20 +11,22 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
             --success-color: #28a745;
             --warning-color: #ffc107;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #2d384e;
             --success-color: #34c759;
             --warning-color: #ffd700;
         }
@@ -52,12 +54,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
             text-decoration: none;
-            color: white !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -84,15 +85,16 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
+            border-radius: 50%;
             padding: 5px;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
         .header-buttons {
@@ -101,8 +103,14 @@
             gap: 15px;
         }
 
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
         .profile-btn {
-            background: #28a745;
+            background: var(--primary-color);
             color: white;
             padding: 8px 15px;
             text-decoration: none;
@@ -116,7 +124,7 @@
         }
 
         .profile-btn:hover {
-            background: #218838;
+            background: var(--hover-color);
         }
 
         .main-content {
@@ -136,7 +144,7 @@
         }
 
         .dark-mode .container {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 40px rgba(255, 255, 255, 0.15);
         }
 
         .back-btn {
@@ -179,7 +187,7 @@
         }
 
         .meta-item {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9em;
@@ -189,7 +197,7 @@
         .course-image {
             width: 100%;
             max-height: 400px;
-            object-fit: cover;
+            object-fit: fill;
             border-radius: 8px;
             margin-bottom: 25px;
             border: 1px solid var(--border-color);
@@ -211,7 +219,7 @@
         }
 
         .detail-card {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
@@ -226,22 +234,18 @@
         }
 
         .price-section {
-            background: #e8f5e8;
+            background: var(--section);
             padding: 25px;
             border-radius: 8px;
             margin: 25px 0;
-            border: 1px solid #27ae60;
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--hover-color);
             text-align: center;
-        }
-
-        .dark-mode .price-section {
-            background: #1e2a1e;
-            border-color: #27ae60;
         }
 
         .price {
             font-size: 2.5em;
-            color: var(--success-color);
+            color: var(--hover-color);
             font-weight: bold;
             margin: 15px 0;
         }
@@ -265,11 +269,12 @@
         }
 
         .rating-section {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 25px;
             border-radius: 8px;
             margin-top: 30px;
             border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-color);
         }
 
         .rating-title {
@@ -341,6 +346,14 @@
             font-size: 14px;
         }
 
+        footer span {
+
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
@@ -384,26 +397,33 @@
     <div class="header">
         <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">منصة التعليم</span>
+            <span class="logo-text">الرئيسية</span>
         </a>
         <div class="header-buttons">
-            <a href="/students/dashboard/" class="profile-btn">
-                    العودة لحساب الطالب  ←   
-            </a>
             <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            {% if request.session.student_id %}
+            <a href="{% url 'students:student_dashboard' %}" class="profile-btn">
+                العودة لحساب الطالب ←
+            </a>
+            {% elif request.session.teacher_id %}
+            <a href="{% url 'teachers:teacher_dashboard' %}" class="profile-btn">
+                العودة لحساب المعلم ←
+            </a>
+            {% endif %}
         </div>
     </div>
 
     <div class="main-content">
         <div class="container">
-            <a href="/courses/" class="back-btn">← العودة للقائمة</a>
+            <a href="/courses/" class="back-btn"> → العودة للقائمة </a>
 
             <div class="course-header">
                 <h1 class="course-title">{{ course.title }}</h1>
                 <div class="course-meta">
+                    <span class="meta-item">👨‍🏫 {{ course.teacher.name }}</span>
                     <span class="meta-item">📚 {{ course.category }}</span>
                     <span class="meta-item">🌐 {{ course.get_language_display }}</span>
-                    <span class="meta-item">👨‍🏫 {{ course.teacher.name }}</span>
+
                 </div>
             </div>
 
@@ -423,15 +443,11 @@
                     <span>{{ course.category }}</span>
                 </div>
                 <div class="detail-card">
-                    <strong>🌐 اللغة</strong>
-                    <span>{{ course.get_language_display }}</span>
-                </div>
-                <div class="detail-card">
                     <strong>⏱️ المدة</strong>
                     <span>{{ course.estimated_duration }}</span>
                 </div>
             </div>
-
+            {% if request.session.student_id %}
             <div class="price-section">
                 <div class="price">💰 {{ course.price }} جنيه</div>
                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
@@ -439,7 +455,9 @@
                     🎓 احجز هذا الكورس
                 </button>
             </div>
+            {% endif %}
 
+            {% if request.session.student_id %}
             <div class="rating-section">
                 <h3 class="rating-title">⭐ قيم هذا الكورس</h3>
                 <div id="rating-section">
@@ -456,11 +474,13 @@
                     </button>
                 </div>
             </div>
+            {% endif %}
+
         </div>
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+        <span> درس أونلاين </span> جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>

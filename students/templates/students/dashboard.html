@@ -13,18 +13,22 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow:#d8dada;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section:#222b3d;
+            --shadow:#28505d;
         }
 
         * {
@@ -45,17 +49,15 @@
 
         .header {
             background-color: var(--header-bg);
-            color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
             text-decoration: none;
-            color: white !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -66,6 +68,7 @@
             opacity: 0.8;
             text-decoration: none;
         }
+
 
         .logo-icon {
             font-size: 40px;
@@ -88,7 +91,6 @@
         .icon-btn {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
             padding: 8px;
@@ -104,9 +106,10 @@
 
         .icon-btn:hover {
             background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
+            transform: scale(1.2);
+            rotate: -30deg;
         }
-
+        
         .notification-badge {
             position: absolute;
             top: 0;
@@ -126,22 +129,30 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
+            border-radius: 50%;
             padding: 5px;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
         }
 
         .logout-btn {
             background: none;
+            text-decoration: none;
             border: none;
-            color: white;
-            font-size: 32px;
+            color: #ffffff;
+            font-size: 45px;
             cursor: pointer;
             padding: 5px;
             width: 50px;
@@ -149,11 +160,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .logout-btn:hover {
             transform: scale(1.2);
+            rotate: -45deg;
+            color: var(--hover-color);
         }
 
         .main-content {
@@ -161,25 +174,20 @@
             padding: 40px 20px;
         }
 
-        .dashboard-container {
+        .container {
             background: var(--card-bg);
             padding: 40px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            width: 100%;
+            box-shadow: 0 4px 40px var(--shadow);
+            width: 90%;
             max-width: 1000px;
             margin: 0 auto;
             border: 1px solid var(--border-color);
         }
 
-        .dark-mode .dashboard-container {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
-        }
-
         .logo {
             font-size: 48px;
             margin-bottom: 10px;
-            color: var(--primary-color);
             text-align: center;
         }
 
@@ -209,26 +217,28 @@
 
         .profile-info h2 {
             color: var(--text-color);
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-size: 20px;
         }
 
         .profile-info p {
-            color: var(--text-color);
+            color: var(--primary-color);
             opacity: 0.8;
         }
 
         .wallet-section {
-            background: #e8f5e8;
+            background: var(--section);
             padding: 25px;
             border-radius: 8px;
             margin: 25px 0;
-            border: 1px solid #27ae60;
+            border: 1px solid var(--border-color);
+            border-right: 6px solid var(--primary-color);
         }
 
         .dark-mode .wallet-section {
-            background: #1e2a1e;
-            border-color: #27ae60;
+            background: var(--section);
+            border-color: var(--border-color);
+            border-right: 6px solid var(--primary-color);
         }
 
         .wallet-section h2 {
@@ -239,7 +249,7 @@
 
         .balance {
             font-size: 1.8em;
-            color: #28a745;
+            color: var(--hover-color);
             font-weight: bold;
             margin: 10px 0;
         }
@@ -251,7 +261,7 @@
             text-decoration: none;
             border-radius: 5px;
             display: inline-block;
-            margin: 5px;
+            margin: 20px 5px 5px 5px;
             transition: background-color 0.3s;
             font-weight: bold;
             border: none;
@@ -263,12 +273,7 @@
             background-color: var(--hover-color);
         }
 
-        .section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
+     
         .section h2 {
             color: var(--text-color);
             margin-bottom: 20px;
@@ -280,9 +285,9 @@
             padding: 20px;
             margin: 15px 0;
             border-radius: 8px;
-            border-right: 4px solid var(--primary-color);
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
+            border-right: 6px solid var(--hover-color);
         }
 
         .course-card:hover {
@@ -291,13 +296,13 @@
 
         .course-card h3 {
             color: var(--text-color);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 18px;
         }
 
         .course-card p {
             color: var(--text-color);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             opacity: 0.8;
         }
 
@@ -315,10 +320,11 @@
         }
 
         .info-item {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 15px;
             border-radius: 5px;
             border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-color);
         }
 
         .info-item strong {
@@ -336,6 +342,13 @@
             text-align: center;
             padding: 15px;
             font-size: 14px;
+        }
+        footer span {
+        
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
         }
 
         /* ===== أنماط نوافذ المراسلة الجديدة والمحسنة ===== */
@@ -562,7 +575,7 @@
                 padding: 15px 20px;
             }
 
-            .dashboard-container {
+            .container {
                 padding: 30px 20px;
                 margin: 20px;
             }
@@ -606,29 +619,25 @@
     <div class="header">
         <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">لوحة تحكم الطالب</span>
+            <span class="logo-text">الرئيسية</span>
         </a>
         <div class="header-icons">
-            <span style="color: white; font-size: 14px;">مرحباً {{ student.name }}</span>
-
             <!-- أيقونة جرس الإشعارات -->
             <button class="icon-btn" onclick="showNotifications()" title="الإشعارات">
-                🔔
                 <span class="notification-badge" id="notificationBadge">0</span>
+                🔔
             </button>
-
             <!-- أيقونة المراسلة مع الإدارة -->
             <button class="icon-btn" onclick="openMessaging()" title="مراسلة الإدارة">
                 ✉️
             </button>
-
             <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-            <a href="/students/logout/" class="logout-btn" title="تسجيل الخروج">⏻</a>
+            <a href="/students/logout/" class="logout-btn" title="تسجيل الخروج">⎋</a>
         </div>
     </div>
 
     <div class="main-content">
-        <div class="dashboard-container">
+        <div class="container">
             <div class="logo">🎓</div>
             <h1>لوحة تحكم الطالب</h1>
 
@@ -637,7 +646,7 @@
                 <img src="{{ student.profile_image.url }}" alt="صورة الطالب" class="profile-img">
                 {% endif %}
                 <div class="profile-info">
-                    <h2>مرحباً {{ student.name }}</h2>
+                    <h2>مرحباً : {{ student.name }}</h2>
                     <p>{{ student.grade }} - {{ student.year }}</p>
                 </div>
             </div>
@@ -645,7 +654,6 @@
             <div class="wallet-section">
                 <h2>محفظتي الإلكترونية</h2>
                 <p class="balance">رصيدك: {{ student.balance }} جنيه</p>
-                <p>رصيد الإهداءات: {{ student.bonus_balance }} جنيه</p>
                 <p>إجمالي المنصرف: {{ student.total_spent }} جنيه</p>
 
                 <a href="/students/wallet/topup/" class="btn">شحن الرصيد</a>
@@ -707,7 +715,7 @@
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+         <span>  درس أونلاين </span>   جميع الحقوق محفوظة  © 2025
     </footer>
 
     <script>

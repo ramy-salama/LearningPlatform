@@ -7,21 +7,27 @@
     <title>درس أونلاين - المنصة الرئيسية</title>
     <style>
         :root {
-            --header-bg: #151e30;
             --bg-color: #f8f9fa;
-            --card-bg: #fff;
+            --card-bg: white;
             --text-color: #333;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #f9f4ef;
+            --shadow:#d8dada;
         }
 
         .dark-mode {
-            --header-bg: #151e30;
             --bg-color: #080c14;
-            --card-bg: #111827;
-            --text-color: #fff;
-            --primary-color: #ba421d;
-            --hover-color: #c07718;
+            --card-bg: #1e2a3a;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow:#28505d;
         }
 
         body {
@@ -33,22 +39,31 @@
             transition: all 0.3s ease;
         }
 
-
         .header {
+            background-color: var(--header-bg);
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: var(--header-bg);
-            color: white;
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            border-bottom: 10px solid var(--primary-color);
         }
 
-        .header .logo h1 {
-            margin: 0;
-            font-size: 24px;
+        .home-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
         }
 
         .header .actions a {
@@ -69,10 +84,19 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             margin-left: 10px;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
         }
 
         .container {
@@ -93,23 +117,18 @@
             background-color: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             text-decoration: none;
             color: var(--text-color);
-        }
-
-        .dark-mode .link-card,
-        .dark-mode .course-card {
-            box-shadow: 0 3px 10px rgba(66, 93, 123, 0.4);
+            box-shadow: 0 3px 8px var(--shadow); 
         }
 
         .link-card:hover,
         .course-card:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px); 
+            box-shadow: 0 5px 30px var(--shadow); 
         }
 
         .link-card .link-icon,
@@ -129,7 +148,7 @@
         }
 
         .link-card .link-title:hover {
-           color: var(--hover-color);
+            color: var(--hover-color);
         }
 
         .courses-grid {
@@ -142,7 +161,7 @@
         .course-card img {
             width: 100%;
             height: 400px;
-            object-fit: cover;
+            object-fit: fill;
         }
 
         .course-info {
@@ -158,7 +177,7 @@
         }
 
         .course-title:hover {
-           color: var(--hover-color);
+            color: var(--primary-color);
         }
 
         .teacher-info {
@@ -175,19 +194,15 @@
             margin-left: 10px;
         }
 
-        .teacher-info a {
+        .teacher-info p {
             font-weight: bold;
-            color: var(--text-color);
-            text-decoration: none;
-        }
-
-        .teacher-info a:hover {
-           color: var(--hover-color);
+            color: var(--primary-color);
+            font-size: 20px;
         }
 
         .course-details {
             font-size: 15px;
-            color: #666;
+            color: #666565;
             flex-grow: 1;
             margin-right: 50px;
             margin-bottom: 10px;
@@ -196,7 +211,7 @@
         .course-price {
             font-weight: bold;
             margin-top: 20px;
-            color: var(--hover-color);
+            color: var(--primary-color);
             margin-right: 85%;
         }
 
@@ -204,8 +219,16 @@
             background-color: var(--header-bg);
             color: white;
             text-align: center;
-            padding: 20px;
-            margin-top: 100px;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        footer span {
+
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
         }
 
         @media (max-width: 768px) {
@@ -228,14 +251,25 @@
 <body>
 
     <div class="header">
-        <div class="logo">
-            <h1>🎓 درس أونلاين</h1>
+        <div class="home-link">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">درس أونلاين</span>
         </div>
         <div class="actions">
             <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
             <a href="{% url 'teachers:teacher_login' %}">تسجيل دخول المعلم</a>
             <a href="{% url 'students:student_login' %}">تسجيل دخول الطالب</a>
+            {% if request.session.student_id %}
+            <a href="{% url 'students:student_dashboard' %}" class="profile-btn">
+                العودة لحساب الطالب ←
+            </a>
+            {% elif request.session.teacher_id %}
+            <a href="{% url 'teachers:teacher_dashboard' %}" class="profile-btn">
+                العودة لحساب المعلم ←
+            </a>
+            {% endif %}
         </div>
+
     </div>
 
     <div class="container">
@@ -263,9 +297,9 @@
                 </a>
                 <div class="teacher-info">
                     <img src="{{ course.teacher.profile_image.url }}" alt="{{ course.teacher.name }}">
-                    <a href="{% url 'teachers:teacher_profile' teacher_id=course.teacher.id %}">
+                    <p>
                         {{ course.teacher.name }}
-                    </a>
+                    </p>
                 </div>
                 <div class="course-details">{{ course.description|truncatechars:100 }}</div>
                 <div class="course-price">{{ course.price }} جنيه</div>
@@ -276,7 +310,7 @@
     </div>
 
     <footer>
-        © 2025 منصة درس أونلاين - جميع الحقوق محفوظة
+        <span> درس أونلاين </span> - - جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>

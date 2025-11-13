@@ -8,6 +8,12 @@ from enrollments.models import Enrollment
 from django.conf import settings
 
 
+# الصفحة الرئيسية
+def home(request):
+    courses = Course.objects.filter(status='published')[:6]  # آخر 6 كورسات
+    return render(request, 'home.html', {'courses': courses})
+
+
 # إنشاء كورس جديد - خاص بالمعلم فقط
 @login_required
 def course_create(request):

@@ -12,18 +12,22 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow:#d8dada;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section:#222b3d;
+            --shadow:#28505d;
         }
 
         * {
@@ -49,12 +53,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
             text-decoration: none;
-            color: white !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -104,17 +107,14 @@
             background: var(--card-bg);
             padding: 40px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 40px var(--shadow);
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             text-align: center;
             border: 1px solid var(--border-color);
         }
 
-        .dark-mode .login-container {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
-        }
-        
+      
         .logo {
             font-size: 48px;
             margin-bottom: 10px;
@@ -171,8 +171,9 @@
             border-radius: 5px;
             font-size: 14px;
             transition: border-color 0.3s;
-            background: var(--card-bg);
+            background: var(--section);
             color: var(--text-color);
+            border-right: 6px solid var(--primary-color);
         }
         
         input[type="text"]:focus,
@@ -189,8 +190,9 @@
             border: 1px solid var(--border-color);
             padding: 15px;
             border-radius: 5px;
-            background: var(--card-bg);
+            background: var(--section);
             text-align: right;
+            border-right: 6px solid var(--primary-color);
         }
 
         .checkbox-group label {
@@ -252,6 +254,13 @@
             padding: 15px;
             font-size: 14px;
         }
+        footer span {
+        
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+        }
 
         @media (max-width: 768px) {
             .header {
@@ -279,7 +288,7 @@
     <div class="header">
         <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">تسجيل معلم جديد</span>
+            <span class="logo-text">الرئيسية</span>
         </a>
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     </div>
@@ -439,7 +448,7 @@
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+         <span>  درس أونلاين </span> جميع الحقوق محفوظة  © 2025
     </footer>
 
     <script>

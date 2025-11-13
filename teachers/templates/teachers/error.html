@@ -1,0 +1,21 @@
+<!-- templates/teachers/error.html -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>خطأ في لوحة المعلم</title>
+  <style>
+    body { font-family: "Cairo", sans-serif; background-color: #f8f9fa; text-align: center; padding: 50px; }
+    .box { background: white; padding: 30px; border-radius: 12px; display: inline-block; box-shadow: 0 0 10px #ccc; }
+    a { display: inline-block; margin-top: 15px; text-decoration: none; background: #007bff; color: white; padding: 10px 20px; border-radius: 6px; }
+    a:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>⚠️ حدث خطأ أثناء تحميل لوحة التحكم</h2>
+    <p>{{ error }}</p>
+    <a href="{% url 'teachers:teacher_login' %}">العودة لتسجيل الدخول</a>
+  </div>
+</body>
+</html>
