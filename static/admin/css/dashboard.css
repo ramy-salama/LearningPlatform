@@ -1,5 +1,51 @@
-/* DASHBOARD */
-.dashboard td, .dashboard th {
+:root {
+    --bg-color: #f8f9fa;
+    --card-bg: white;
+    --text-color: #333;
+    --header-bg: #2c3e50;
+    --border-color: #ecf0f1;
+    --primary-color: #ffab25;
+    --hover-color: #4a90e2;
+    --section: #fdf3ea;
+    --shadow: #d8dada;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --error-color: #dc3545;
+    --body-fg: #333;
+}
+
+.dark-mode {
+    --bg-color: #080c14;
+    --card-bg: #1e2a3a;
+    --text-color: #ffffff;
+    --header-bg: #1e2a3a;
+    --border-color: #404040;
+    --primary-color: #357abd;
+    --hover-color: #ffab25;
+    --section: #222b3d;
+    --shadow: #28505d;
+    --success-color: #34c759;
+    --warning-color: #ffd700;
+    --danger-color:#fe1d00;
+    --error-color: #fe1d00;
+    --body-fg: #ffffff;
+}
+
+body{
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+/* تنسيقات لوحة التحكم العامة */
+.dashboard-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 45px;
+    margin-bottom: 40px;
+}
+
+.dashboard td,
+.dashboard th {
     word-break: break-word;
 }
 
@@ -16,8 +62,127 @@
     padding-right: .6em;
 }
 
-/* RECENT ACTIONS MODULE */
+/* تنسيقات الإجراءات الأخيرة */
+.recent-actions-container {
+    background: var(--card-bg);
+    border-radius:7px;
+    padding: 0;
+    box-shadow: 0 4px 15px var(--shadow);
+    width: 95%;
+    margin-bottom: 25px;
+}
 
+.sidebar-header {
+    background: var(--primary-color);
+    padding: 20px ;
+    border-radius: 7px 7px 0 0;
+    margin: 0;
+    outline: 2px solid var(--primary-color)
+}
+
+.sidebar-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 1.3em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-content {
+    padding: 10px;
+    margin: 5px;
+    max-height: 600px;
+    overflow-y: auto;
+    background: var(--card-bg);
+}
+
+.actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--section);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.action-item:hover {
+    transform: translateX(-3px);
+    border: 1px solid var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+    background: var(--bg-color);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.action-item.add {
+    border-left-color: var(--success-color);
+}
+
+.action-item.change {
+    border-left-color: var(--warning-color);
+}
+
+.action-item.delete {
+    border-left-color: var(--danger-color);
+}
+
+.action-icon {
+    font-size: 1.2em;
+    width: 30px;
+    text-align: center;
+    background: var(--card-bg);
+    padding: 8px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+.action-details {
+    flex: 1;
+}
+
+.action-object {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.action-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+.action-type {
+    color: var(--hover-color);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-color);
+}
+
+.no-data-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+} 
+
+/* تنسيقات القائمة */
 .module ul.actionlist {
     margin-left: 0;
 }
@@ -26,4 +191,214 @@ ul.actionlist li {
     list-style-type: none;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* شريط التمرير */
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+/* تنسيقات التقارير */
+.reports-container {
+    background: var(--section);
+    border-radius: 12px;
+    max-height: 635px;
+    padding: 30px;
+    box-shadow: 0 4px 10px var(--shadow);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title {
+    color: var(--text-color);
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.page-subtitle {
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 1.1em;
+}
+
+.btn {
+    background: var(--primary-color);
+    color: var(--text-color) !important; 
+    padding: 12px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+
+/* تحسينات للهواتف المحمولة */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-main {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.8em;
+    }
+
+    .reports-container,
+    .recent-actions-container {
+        padding: 20px;
+    }
+
+    .btn {
+        width: calc(100% - 40px);
+        justify-content: center;
+    }
+
+    .action-item {
+        padding: 12px;
+    }
+
+    .action-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-header {
+        padding: 15px;
+    }
+
+    .sidebar-content {
+        padding: 15px;
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-main {
+        gap: 15px;
+    }
+
+    .page-title {
+        font-size: 1.6em;
+    }
+
+    .page-subtitle {
+        font-size: 1em;
+    }
+
+    .section-title {
+        font-size: 1.2em;
+        justify-content: center;
+    }
+
+    .reports-container,
+    .recent-actions-container {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .sidebar-header h3 {
+        font-size: 1.1em;
+        justify-content: center;
+    }
+
+    .action-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .action-icon {
+        width: auto;
+    }
+
+    .action-details {
+        width: 100%;
+    }
+
+    .action-meta {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .stats-container {
+        padding: 15px;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 2em;
+    }
+}
+
+/* تحسينات إضافية للشاشات الصغيرة جداً */
+@media (max-width: 360px) {
+    .page-title {
+        font-size: 1.4em;
+    }
+
+    .page-subtitle {
+        font-size: 0.9em;
+    }
+
+    .reports-container,
+    .recent-actions-container {
+        padding: 12px;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+
+    .action-item {
+        padding: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 1.8em;
+    }
 }

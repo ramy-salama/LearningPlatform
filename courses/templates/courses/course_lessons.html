@@ -14,7 +14,7 @@
             --primary-color: #ffab25;
             --hover-color: #4a90e2;
             --section: #fdf3ea;
-            --shadow:#d8dada;
+            --shadow: #d8dada;
             --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
@@ -28,8 +28,8 @@
             --border-color: #404040;
             --primary-color: #357abd;
             --hover-color: #ffab25;
-            --section:#222b3d;
-            --shadow:#28505d;
+            --section: #222b3d;
+            --shadow: #28505d;
             --success-color: #34c759;
             --warning-color: #ffd700;
             --danger-color: #ff3b30;
@@ -85,11 +85,13 @@
             color: white;
             text-decoration: none;
         }
-.header-buttons {
+
+        .header-buttons {
             display: flex;
             align-items: center;
             gap: 20px;
         }
+
         .theme-toggle {
             background: none;
             border: none;
@@ -178,7 +180,7 @@
         }
 
         .module-card {
-            background: var(--shadow);
+            background: var(--section);
             padding: 25px;
             border-radius: 8px;
             margin: 20px 0;
@@ -210,7 +212,7 @@
         }
 
         .lesson-item {
-            background: var(--section);
+            background: var(--shadow);
             padding: 20px;
             border-radius: 8px;
             margin: 12px 0;
@@ -278,8 +280,9 @@
             padding: 15px;
             font-size: 14px;
         }
+
         footer span {
-        
+
             color: var(--hover-color);
             text-align: center;
             padding: 15px;
@@ -329,7 +332,7 @@
             <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
             <a href="/students/dashboard/" class="back-btn"> رجوع للداشبورد ← </a>
         </div>
-        
+
     </div>
 
     <div class="main-content">
@@ -366,13 +369,6 @@
                                 <a href="/courses/{{ course.id }}/lesson/{{ lesson.id }}/" class="btn video-btn">
                                     📹 مشاهدة الدرس
                                 </a>
-
-                                {% if lesson.lesson_type == 'video' and lesson.youtube_video_id %}
-                                <a href="https://www.youtube.com/watch?v={{ lesson.youtube_video_id }}" target="_blank"
-                                    class="btn youtube-btn">
-                                    YouTube (طوارئ)
-                                </a>
-                                {% endif %}
                             </div>
                         </div>
                         {% empty %}
@@ -392,7 +388,7 @@
     </div>
 
     <footer>
-         <span>  درس أونلاين </span>   جميع الحقوق محفوظة  © 2025
+        <span> درس أونلاين </span> جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>

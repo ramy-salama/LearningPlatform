@@ -1,4 +1,4 @@
-# students/views.py - محدث ومحسن
+# students/views.py - محدث ومصحح
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db import IntegrityError
@@ -24,6 +24,9 @@ def student_register(request):
         residence = request.POST.get('residence')
         grade = request.POST.get('grade')
         year = request.POST.get('year')
+        
+        # ✅ معالجة رفع الصورة الشخصية
+        profile_image = request.FILES.get('profile_image')
 
         if not all([name, phone_number, parent_phone, password, residence, grade, year]):
             return render(request, 'students/register.html', {
@@ -43,7 +46,8 @@ def student_register(request):
                 password=password,  # سيتم تشفيرها تلقائياً في save()
                 residence=residence,
                 grade=grade,
-                year=year
+                year=year,
+                profile_image=profile_image  # ✅ إضافة الصورة الشخصية
             )
             student.save()
             return redirect('students:student_login')
@@ -204,7 +208,7 @@ def student_logout(request):
     return redirect('students:student_login')
 
 # ===============================
-# دوال المراسلة الجديدة (مضافة ومصححة مع تحسينات الأداء)
+# دوال المراسلة الجديدة (مصححة بالكامل)
 # ===============================
 
 def get_student_notifications(request):
@@ -221,8 +225,7 @@ def get_student_notifications(request):
             receiver_id=student_id
         ).select_related(
             'sender_admin',
-            'sender_teacher', 
-            'sender_student'
+            'sender_teacher'
         ).only(
             'id',
             'title',
@@ -242,7 +245,7 @@ def get_student_notifications(request):
                 'created_at': msg.created_at.strftime('%Y-%m-%d %H:%M'),
                 'sender_type': msg.sender_type,
                 'sender_name': msg.get_sender_name(),
-                'has_replies': msg.replies.exists()
+                'has_replies': hasattr(msg, 'replies') and msg.replies.exists()
             })
 
         return JsonResponse({'messages': message_list})
@@ -252,7 +255,7 @@ def get_student_notifications(request):
 
 @csrf_exempt
 def send_student_message(request):
-    """إرسال رسالة من الطالب إلى الإدارة - محسن"""
+    """إرسال رسالة من الطالب إلى الإدارة - مصحح"""
     if 'student_id' not in request.session:
         return JsonResponse({'status': 'error', 'message': 'يجب تسجيل الدخول'})
 
@@ -268,10 +271,10 @@ def send_student_message(request):
             if 'title' not in data or 'content' not in data:
                 return JsonResponse({'status': 'error', 'message': 'العنوان والمحتوى مطلوبان'})
 
+            # ✅ إصلاح المشكلة: استخدام الحقول الصحيحة لنموذج Message
             message = Message.objects.create(
                 sender_type='student',
-                sender_student_id=student_id,  # استخدام العلاقة الجديدة
-                sender_id=student_id,  # للحفاظ على التوافق
+                sender_id=student_id,  # ✅ استخدام sender_id بدلاً من sender_student_id
                 receiver_type='admin',
                 title=data['title'],
                 content=data['content']
@@ -283,12 +286,12 @@ def send_student_message(request):
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'بيانات غير صالحة'})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
+            return JsonResponse({'status': 'error', 'message': f'حدث خطأ: {str(e)}'})
 
     return JsonResponse({'status': 'error', 'message': 'Method not allowed'})
 
 def get_student_conversation(request, message_id):
-    """جلب محادثة كاملة للطالب - محسن"""
+    """جلب محادثة كاملة للطالب - مصحح"""
     if 'student_id' not in request.session:
         return JsonResponse({'conversation': []})
 
@@ -300,8 +303,6 @@ def get_student_conversation(request, message_id):
             id=message_id, 
             receiver_type='student', 
             receiver_id=student_id
-        ).prefetch_related(
-            'replies'
         ).first()
         
         if not main_message:
@@ -321,18 +322,19 @@ def get_student_conversation(request, message_id):
             'is_main': True
         })
         
-        # إضافة الردود - تم جلبها مسبقاً
-        replies = main_message.replies.all().order_by('created_at')
-        for reply in replies:
-            conversation.append({
-                'id': reply.id,
-                'content': reply.content,
-                'is_read': reply.is_read,
-                'created_at': reply.created_at.strftime('%Y-%m-%d %H:%M'),
-                'sender_type': reply.sender_type,
-                'sender_name': reply.get_sender_name(),
-                'is_main': False
-            })
+        # إضافة الردود إذا كان هناك علاقة replies
+        if hasattr(main_message, 'replies'):
+            replies = main_message.replies.all().order_by('created_at')
+            for reply in replies:
+                conversation.append({
+                    'id': reply.id,
+                    'content': reply.content,
+                    'is_read': reply.is_read,
+                    'created_at': reply.created_at.strftime('%Y-%m-%d %H:%M'),
+                    'sender_type': reply.sender_type,
+                    'sender_name': reply.get_sender_name(),
+                    'is_main': False
+                })
         
         return JsonResponse({'conversation': conversation})
     
@@ -341,9 +343,8 @@ def get_student_conversation(request, message_id):
     except Exception as e:
         return JsonResponse({'conversation': [], 'error': str(e)})
 
-# دالة جديدة لجلب الرسائل غير المقروءة فقط - محسنة
 def get_unread_student_messages(request):
-    """جلب الرسائل غير المقروءة للطالب - محسن"""
+    """جلب الرسائل غير المقروءة للطالب - مصحح"""
     if 'student_id' not in request.session:
         return JsonResponse({'messages': []})
 
@@ -357,8 +358,7 @@ def get_unread_student_messages(request):
             is_read=False
         ).select_related(
             'sender_admin',
-            'sender_teacher',
-            'sender_student'
+            'sender_teacher'
         ).only(
             'id',
             'title', 

@@ -213,6 +213,21 @@
             border-radius: 50%;
             margin-left: 15px;
             border: 2px solid var(--border-color);
+            object-fit: cover; /* ✅ تحسين عرض الصورة */
+        }
+
+        .default-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-left: 15px;
+            border: 2px solid var(--border-color);
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
         }
 
         .profile-info h2 {
@@ -589,7 +604,7 @@
                 text-align: center;
             }
 
-            .profile-img {
+            .profile-img, .default-avatar {
                 margin-left: 0;
                 margin-bottom: 15px;
             }
@@ -642,12 +657,15 @@
             <h1>لوحة تحكم الطالب</h1>
 
             <div class="profile">
+                <!-- ✅ تحسين عرض الصورة الشخصية -->
                 {% if student.profile_image %}
                 <img src="{{ student.profile_image.url }}" alt="صورة الطالب" class="profile-img">
+                {% else %}
+                <div class="default-avatar">👤</div>
                 {% endif %}
                 <div class="profile-info">
                     <h2>مرحباً : {{ student.name }}</h2>
-                    <p>{{ student.grade }} - {{ student.year }}</p>
+                    <p>{{ student.get_grade_display }} - {{ student.get_year_display }}</p>
                 </div>
             </div>
 

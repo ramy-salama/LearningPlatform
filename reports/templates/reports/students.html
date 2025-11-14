@@ -10,21 +10,25 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
             --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
             --success-color: #34c759;
             --warning-color: #ffd700;
             --danger-color: #ff3b30;
@@ -53,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
@@ -85,15 +89,22 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
+            border-radius: 50%;
             padding: 5px;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
         }
 
         .main-content {
@@ -105,15 +116,11 @@
             background: var(--card-bg);
             padding: 40px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px var(--shadow);
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
             border: 1px solid var(--border-color);
-        }
-
-        .dark-mode .container {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
         }
 
         .back-btn {
@@ -149,21 +156,19 @@
         }
 
         .stat-card {
-            background: #e3f2fd;
+            background: var(--section);
             padding: 30px;
             border-radius: 12px;
             text-align: center;
-            border: 1px solid #1976d2;
+            border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
-        }
-
-        .dark-mode .stat-card {
-            background: #1a237e;
-            border-color: #1976d2;
+            border-top: 4px solid var(--primary-color);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
+            border: 1px solid var(--primary-color);
+            border-top: 4px solid var(--primary-color);
         }
 
         .stat-icon {
@@ -201,16 +206,17 @@
         }
 
         .grade-item {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            border-right: 4px solid var(--success-color);
+            border-right: 4px solid var(--primary-color);
             transition: all 0.3s ease;
         }
 
         .grade-item:hover {
-            border-color: var(--success-color);
+            border-color: var(--primary-color);
+            border-right: 4px solid var(--primary-color);
             transform: translateX(-5px);
         }
 
@@ -278,12 +284,21 @@
             border-color: #ff5252;
         }
 
+        
         footer {
             background-color: var(--header-bg);
             color: white;
             text-align: center;
             padding: 15px;
             font-size: 14px;
+        }
+
+        footer span {
+
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
         }
 
         @media (max-width: 768px) {
@@ -345,7 +360,7 @@
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+        <span> درس أونلاين </span> جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>

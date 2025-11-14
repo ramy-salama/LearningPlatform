@@ -1,13 +1,67 @@
-# admins/views.py - محدث ومصحح
+# admins/views.py - محدث ومكتمل مع إحصائيات الأدمن
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
+from django.db.models import Q, Count, Sum, Avg
+from django.contrib.admin.views.decorators import staff_member_required
+from django.template.response import TemplateResponse
 import json
+from datetime import datetime
 from students.models import Student
+from teachers.models import Teacher
 from courses.models import Course
 from enrollments.models import Enrollment
 from messaging.models import Message
+from ratings.models import CourseRating
+
+@staff_member_required
+def custom_admin_index(request):
+    """صفحة الأدمن الرئيسية مع بيانات التقارير المدمجة"""
+    from django.contrib.admin import site
+    
+    # جلب الإحصائيات الحية من قاعدة البيانات
+    total_students = Student.objects.count()
+    total_teachers = Teacher.objects.count()
+    total_courses = Course.objects.count()
+    
+    # الإيرادات المالية
+    total_revenue = Enrollment.objects.aggregate(
+        total=Sum('amount_paid')
+    )['total'] or 0
+    
+    total_purchases = Enrollment.objects.count()
+    total_course_students = Enrollment.objects.filter(status='active').count()
+    
+    # إيرادات الشهر الحالي
+    current_month = datetime.now().month
+    monthly_revenue = Enrollment.objects.filter(
+        enrollment_date__month=current_month
+    ).aggregate(total=Sum('amount_paid'))['total'] or 0
+    
+    # الكورسات الأعلى تقييماً
+    top_rated_courses = Course.objects.annotate(
+        avg_rating=Avg('courserating__rating')
+    ).filter(avg_rating__isnull=False).order_by('-avg_rating')[:5].values(
+        'title', 'avg_rating', 'teacher__name'
+    )
+    
+    # الحصول على context الأساسي من الأدمن
+    context = site.each_context(request)
+    
+    # إضافة بيانات التقارير المدمجة
+    context.update({
+        'total_students': total_students,
+        'total_teachers': total_teachers,
+        'total_courses': total_courses,
+        'total_revenue': float(total_revenue),
+        'monthly_revenue': float(monthly_revenue),
+        'total_purchases': total_purchases,
+        'total_course_students': total_course_students,
+        'top_rated_courses': list(top_rated_courses),
+        'stats_success': True
+    })
+    
+    return TemplateResponse(request, 'admin/index.html', context)
 
 @csrf_exempt
 def send_bulk_message(request):

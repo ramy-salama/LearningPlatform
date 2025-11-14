@@ -1,4 +1,4 @@
-# admins/admin.py - محدث ومحسن
+# admins/admin.py - محدث ومكتمل
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import path
@@ -16,6 +16,7 @@ class AdminAdmin(admin.ModelAdmin):
             '<div style="display: flex; gap: 5px;">'
             '<a class="button" href="/admin/students/student/" title="عرض الطلاب" style="background: #4CAF50; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 12px;">👥 الطلاب</a>'
             '<a class="button" href="/admin/teachers/teacher/" title="عرض المعلمين" style="background: #2196F3; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 12px;">👨‍🏫 المعلمين</a>'
+            '<a class="button" href="/reports/" title="التقارير التفصيلية" style="background: #FF9800; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 12px;">📊 التقارير</a>'
             '</div>'
         )
     admin_actions.short_description = 'الإجراءات السريعة'

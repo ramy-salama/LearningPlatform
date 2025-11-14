@@ -10,21 +10,25 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow:#d8dada;
             --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section:#222b3d;
+            --shadow:#28505d;
             --success-color: #34c759;
             --warning-color: #ffd700;
             --danger-color: #ff3b30;
@@ -53,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
@@ -85,15 +89,22 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
+            border-radius: 50%;
             padding: 5px;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
         }
 
         .main-content {
@@ -105,15 +116,11 @@
             background: var(--card-bg);
             padding: 40px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px var(--shadow);
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
             border: 1px solid var(--border-color);
-        }
-
-        .dark-mode .container {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
         }
 
         .back-btn {
@@ -149,21 +156,19 @@
         }
 
         .stat-card {
-            background: #fff3e0;
+            background: var(--section);
             padding: 25px;
             border-radius: 8px;
             text-align: center;
-            border: 1px solid #ffb74d;
+            border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
-        }
-
-        .dark-mode .stat-card {
-            background: #332900;
-            border-color: #ffb74d;
+            border-right: 4px solid var(--primary-color);
         }
 
         .stat-card:hover {
             transform: translateY(-3px);
+            border: 1px solid var(--primary-color);
+            border-right: 4px solid var(--primary-color);
         }
 
         .stat-title {
@@ -307,10 +312,10 @@
 <body>
 
     <div class="header">
-        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+       <div class="home-link">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">التقارير والإحصائيات</span>
-        </a>
+            <span class="logo-text">تقارير الكورسات </span>
+        </div>
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     </div>
 

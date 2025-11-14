@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <title>لوحة تحكم التقارير</title>
@@ -10,21 +11,25 @@
             --text-color: #333;
             --header-bg: #2c3e50;
             --border-color: #ecf0f1;
-            --primary-color: #3498db;
-            --hover-color: #2980b9;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
             --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
         }
 
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
             --text-color: #ffffff;
             --header-bg: #1e2a3a;
             --border-color: #404040;
-            --primary-color: #4a90e2;
-            --hover-color: #357abd;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
             --success-color: #34c759;
             --warning-color: #ffd700;
             --danger-color: #ff3b30;
@@ -35,7 +40,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             background-color: var(--bg-color);
@@ -45,15 +50,14 @@
             flex-direction: column;
             transition: all 0.3s ease;
         }
-        
+
         .header {
             background-color: var(--header-bg);
-            color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 10px solid var(--primary-color);
         }
 
         .home-link {
@@ -85,22 +89,30 @@
         .theme-toggle {
             background: none;
             border: none;
-            color: white;
             font-size: 24px;
             cursor: pointer;
+            border-radius: 50%;
             padding: 5px;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
 
         .main-content {
             flex: 1;
             padding: 40px 20px;
         }
-        
+
         .container {
             width: 100%;
             max-width: 1200px;
@@ -136,7 +148,7 @@
             background: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px var(--shadow);
             border: 1px solid var(--border-color);
             text-align: center;
             transition: all 0.3s ease;
@@ -145,11 +157,7 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .dark-mode .stat-card {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px var(--shadow);
         }
 
         .stat-icon {
@@ -183,12 +191,8 @@
             padding: 30px;
             border-radius: 12px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px var(--shadow);
             border: 1px solid var(--border-color);
-        }
-
-        .dark-mode .report-section {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
         }
 
         .section-title {
@@ -227,16 +231,16 @@
         }
 
         .course-item {
-            background: var(--bg-color);
+            background: var(--section);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            border-right: 4px solid var(--warning-color);
+            border-right: 4px solid var(--primary-color);
             transition: all 0.3s ease;
         }
 
         .course-item:hover {
-            border-color: var(--warning-color);
+            border-color: var(--primary-color);
             transform: translateX(-5px);
         }
 
@@ -281,6 +285,14 @@
             border-color: #ff5252;
         }
 
+        .stats-update-info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8em;
+            opacity: 0.7;
+            color: var(--text-color);
+        }
+
         footer {
             background-color: var(--header-bg);
             color: white;
@@ -289,15 +301,24 @@
             font-size: 14px;
         }
 
+        footer span {
+
+            color: var(--hover-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
             }
-            
+
             .container {
                 padding: 0 15px;
             }
-            
+
             .logo-text {
                 font-size: 18px;
             }
@@ -323,13 +344,15 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="header">
-        <a class="home-link" href="{% url 'home' %}" title="الرئيسية">
+        
+            <a  class="home-link" href="{% url 'admin:index' %}">
             <span class="logo-icon">🎓</span>
-            <span class="logo-text">التقارير والإحصائيات</span>
-        </a>
+            <span class="logo-text">الإدارة</span>
+      </a>
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     </div>
 
@@ -337,37 +360,41 @@
         <div class="container">
             <div class="page-header">
                 <h1 class="page-title">📊 لوحة تحكم التقارير</h1>
-                <p class="page-subtitle">إحصائيات وأداء المنصة</p>
+                <p class="page-subtitle">إحصائيات وأداء المنصة - بيانات حية</p>
             </div>
 
-            <!-- البطاقات الإحصائية -->
+            <!-- البطاقات الإحصائية - بيانات ديناميكية -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">💰</div>
                     <div class="stat-title">الإيرادات</div>
-                    <div class="stat-number" id="totalRevenue">0</div>
+                    <div class="stat-number" id="totalRevenue">{{ total_revenue|floatformat:2 }} ج.م</div>
                     <div class="stat-description">إجمالي الإيرادات</div>
+                    <div class="stats-update-info">🔄 محدث تلقائياً</div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="stat-icon">👥</div>
                     <div class="stat-title">الطلاب</div>
-                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-number" id="totalStudents">{{ total_students }}</div>
                     <div class="stat-description">إجمالي الطلاب المسجلين</div>
+                    <div class="stats-update-info">🔄 محدث تلقائياً</div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="stat-icon">👨‍🏫</div>
                     <div class="stat-title">المعلمين</div>
-                    <div class="stat-number" id="totalTeachers">0</div>
+                    <div class="stat-number" id="totalTeachers">{{ total_teachers }}</div>
                     <div class="stat-description">إجمالي المعلمين</div>
+                    <div class="stats-update-info">🔄 محدث تلقائياً</div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="stat-icon">📚</div>
                     <div class="stat-title">الكورسات</div>
-                    <div class="stat-number" id="totalCourses">0</div>
+                    <div class="stat-number" id="totalCourses">{{ total_courses }}</div>
                     <div class="stat-description">إجمالي الكورسات</div>
+                    <div class="stats-update-info">🔄 محدث تلقائياً</div>
                 </div>
             </div>
 
@@ -389,9 +416,50 @@
             <div class="report-section">
                 <h2 class="section-title">⭐ الكورسات الأعلى تقييماً</h2>
                 <div id="topCourses" class="courses-list">
+                    {% if top_rated_courses %}
+                    {% for course in top_rated_courses %}
+                    <div class="course-item">
+                        <div class="course-title">{{ course.title }}</div>
+                        <div class="course-rating">
+                            <span>⭐</span>
+                            <span>{{ course.avg_rating|floatformat:1 }}</span>
+                            <span>| 👨‍🏫 {{ course.teacher__name|default:"غير معروف" }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
                     <div class="loading-state">
-                        <div class="loading-icon">⏳</div>
-                        <p>جاري تحميل البيانات...</p>
+                        <div class="loading-icon">📚</div>
+                        <p>لا توجد كورسات بتقييمات حالياً</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- معلومات إضافية -->
+            <div class="report-section">
+                <h2 class="section-title">📋 معلومات سريعة</h2>
+                <div class="courses-list">
+                    <div class="course-item">
+                        <div class="course-title">إجمالي عمليات الشراء</div>
+                        <div class="course-rating">
+                            <span>🛒</span>
+                            <span id="totalPurchases">{{ total_purchases }} عملية شراء</span>
+                        </div>
+                    </div>
+                    <div class="course-item">
+                        <div class="course-title">الطلاب في الكورسات</div>
+                        <div class="course-rating">
+                            <span>👨‍🎓</span>
+                            <span id="totalCourseStudents">{{ total_course_students }} طالب نشط</span>
+                        </div>
+                    </div>
+                    <div class="course-item">
+                        <div class="course-title">إيرادات الشهر</div>
+                        <div class="course-rating">
+                            <span>📅</span>
+                            <span id="monthlyRevenue">{{ monthly_revenue|floatformat:2 }} ج.م</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -399,93 +467,114 @@
     </div>
 
     <footer>
-        © 2025 منصة التعليم الذكي - جميع الحقوق محفوظة
+        <span> درس أونلاين </span> جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>
-        // جلب البيانات وعرضها
-        async function loadReports() {
+        // تحديث البيانات تلقائياً
+        async function updateStats() {
             try {
-                // الإيرادات
-                const financialResponse = await fetch('/reports/financial/json/');
-                const financialData = await financialResponse.json();
-                document.getElementById('totalRevenue').textContent = financialData.total_revenue.toLocaleString() + ' ج.م';
+                const response = await fetch('/reports/dashboard-stats/');
+                const data = await response.json();
 
-                // الطلاب
-                const studentsResponse = await fetch('/reports/students/json/');
-                const studentsData = await studentsResponse.json();
-                document.getElementById('totalStudents').textContent = studentsData.total_students.toLocaleString();
+                if (data.success) {
+                    // تحديث الإيرادات
+                    document.getElementById('totalRevenue').textContent =
+                        data.total_revenue.toLocaleString('ar-EG') + ' ج.م';
 
-                // الكورسات
-                const coursesResponse = await fetch('/reports/courses/json/');
-                const coursesData = await coursesResponse.json();
-                document.getElementById('totalCourses').textContent = coursesData.total_courses.toLocaleString();
+                    // تحديث الطلاب
+                    document.getElementById('totalStudents').textContent =
+                        data.total_students.toLocaleString('ar-EG');
 
-                // المعلمين - جلب البيانات الفعلية
-                const teachersResponse = await fetch('/reports/teachers/json/');
-                const teachersData = await teachersResponse.json();
-                document.getElementById('totalTeachers').textContent = teachersData.total_teachers.toLocaleString();
+                    // تحديث المعلمين
+                    document.getElementById('totalTeachers').textContent =
+                        data.total_teachers.toLocaleString('ar-EG');
 
-                // الكورسات الأعلى تقييماً
-                const topCourses = coursesData.top_rated_courses.slice(0, 5);
-                let topCoursesHTML = '';
-                
-                if (topCourses.length > 0) {
-                    topCoursesHTML = topCourses.map(course => 
-                        `<div class="course-item">
+                    // تحديث الكورسات
+                    document.getElementById('totalCourses').textContent =
+                        data.total_courses.toLocaleString('ar-EG');
+
+                    // تحديث المعلومات الإضافية
+                    document.getElementById('totalPurchases').textContent =
+                        data.total_purchases.toLocaleString('ar-EG') + ' عملية شراء';
+
+                    document.getElementById('totalCourseStudents').textContent =
+                        data.total_course_students.toLocaleString('ar-EG') + ' طالب نشط';
+
+                    document.getElementById('monthlyRevenue').textContent =
+                        data.monthly_revenue.toLocaleString('ar-EG') + ' ج.م';
+
+                    // تحديث الكورسات الأعلى تقييماً
+                    updateTopCourses(data.top_rated_courses);
+
+                    console.log('✅ تم تحديث البيانات بنجاح:', new Date().toLocaleTimeString('ar-EG'));
+                }
+            } catch (error) {
+                console.error('❌ خطأ في تحديث البيانات:', error);
+            }
+        }
+
+        // تحديث قائمة الكورسات الأعلى تقييماً
+        function updateTopCourses(courses) {
+            const topCoursesContainer = document.getElementById('topCourses');
+
+            if (courses && courses.length > 0) {
+                let html = '';
+                courses.forEach(course => {
+                    html += `
+                        <div class="course-item">
                             <div class="course-title">${course.title}</div>
                             <div class="course-rating">
                                 <span>⭐</span>
                                 <span>${course.avg_rating ? course.avg_rating.toFixed(1) : '0.0'}</span>
                                 <span>| 👨‍🏫 ${course.teacher__name || 'غير معروف'}</span>
                             </div>
-                        </div>`
-                    ).join('');
-                } else {
-                    topCoursesHTML = '<div class="loading-state"><p>لا توجد كورسات بتقييمات حالياً</p></div>';
-                }
-                
-                document.getElementById('topCourses').innerHTML = topCoursesHTML;
-
-            } catch (error) {
-                console.error('Error loading reports:', error);
-                document.getElementById('topCourses').innerHTML = `
-                    <div class="error-state">
-                        <div class="loading-icon">❌</div>
-                        <p>حدث خطأ في تحميل البيانات</p>
-                        <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">${error.message}</p>
-                    </div>
-                `;
+                        </div>
+                    `;
+                });
+                topCoursesContainer.innerHTML = html;
             }
         }
 
+        // تبديل الوضع الداكن
         function toggleTheme() {
             const themeToggle = document.querySelector('.theme-toggle');
             document.body.classList.toggle('dark-mode');
             const isDarkMode = document.body.classList.contains('dark-mode');
-            
+
             if (isDarkMode) {
                 themeToggle.textContent = '☀️';
             } else {
                 themeToggle.textContent = '🌙';
             }
-            
+
             localStorage.setItem('darkMode', isDarkMode);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        // التهيئة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function () {
+            // تحميل الوضع الداكن المحفوظ
             const savedDarkMode = localStorage.getItem('darkMode') === 'true';
             const themeToggle = document.querySelector('.theme-toggle');
-            
+
             if (savedDarkMode) {
                 document.body.classList.add('dark-mode');
                 themeToggle.textContent = '☀️';
             } else {
                 themeToggle.textContent = '🌙';
             }
-            
-            loadReports();
+
+            // تحديث البيانات كل 30 ثانية
+            setInterval(updateStats, 30000);
+
+            // تحديث أولي بعد تحميل الصفحة
+            setTimeout(updateStats, 2000);
+
+            console.log('🚀 تم تحميل لوحة التقارير بنجاح');
+            console.log('📊 البيانات المعروضة حالياً من قاعدة البيانات مباشرة');
+            console.log('🔄 سيتم تحديث البيانات تلقائياً كل 30 ثانية');
         });
     </script>
 </body>
+
 </html>
