@@ -1,4 +1,4 @@
-# students/urls.py - محدث ومصحح
+# students/urls.py - محدث مع حذف مسارات استقبال الرسائل تماماً
 from django.urls import path
 from . import views
 
@@ -13,9 +13,6 @@ urlpatterns = [
     path('wallet/balance/', views.wallet_balance, name='wallet_balance'),
     path('logout/', views.student_logout, name='student_logout'),
     
-    # مسارات المراسلة الجديدة
+    # ✅ مسار المراسلة الوحيد (الطالب → الإدارة فقط)
     path('send-message/', views.send_student_message, name='send_student_message'),
-    path('notifications/', views.get_student_notifications, name='student_notifications'),
-    path('unread-messages/', views.get_unread_student_messages, name='unread_student_messages'),
-    path('conversation/<int:message_id>/', views.get_student_conversation, name='student_conversation'),
 ]

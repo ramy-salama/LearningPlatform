@@ -1,11 +1,10 @@
-<!-- templates/admin/base_site.html - محدث ومصحح -->
+<!-- templates/admin/base_site.html - محدث مع حذف إرسال الرسائل -->
 {% extends "admin/base.html" %}
 {% load i18n static %}
 
 {% block title %}
 {{ title }} | {% trans 'نظام الإدارة' %}
 {% endblock %}
-
 
 {% block extrastyle %}
 <style>
@@ -85,7 +84,6 @@
         font-size: 45px;
     }
 
-
     /* ===== زر تسجيل الخروج مع Dark Mode ===== */
     #logout-form button[type="submit"] {
         background: none;
@@ -95,7 +93,7 @@
         font-size: 45px;
         cursor: pointer;
         padding: 5px;
-        width: 40;
+        width: 40px;
         height: 40px;
         display: flex;
         align-items: center;
@@ -109,12 +107,7 @@
         color: var(--hover-color);
     }
 
-
-
-    /* زر التوجل */
-
-
-    /* ===== أيقونات المراسلة والإشعارات مع Dark Mode ===== */
+    /* ===== أيقونات الإشعارات مع Dark Mode ===== */
     .admin-icons {
         display: flex;
         align-items: center;
@@ -123,24 +116,24 @@
 
     .admin-icon-btn {
         background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 8px;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            position: relative;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 8px;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        position: relative;
     }
 
     .admin-icon-btn:hover {
         background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.2);
-            rotate: -30deg;
+        transform: scale(1.2);
+        rotate: -30deg;
     }
 
     .notification-badge {
@@ -181,294 +174,226 @@
         transform: scale(1.1) rotate(15deg);
     }
 
-    /* ===== أنماط نوافذ المراسلة مع Dark Mode ===== */
-    .messaging-modal {
+    /* ===== تنسيق محسّن لنافذة الإشعارات ===== */
+    .enhanced-notifications-modal {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         background: var(--card-bg);
-        border-radius: 12px;
-        box-shadow: 0 20px 60px var(--shadow);
-        width: 500px;
-        max-width: 90vw;
-        max-height: 80vh;
+        border-radius: 16px;
+        box-shadow: 0 25px 80px var(--shadow);
+        width: 550px;
+        max-width: 95vw;
+        max-height: 85vh;
         z-index: 10000;
         border: 1px solid var(--border-color);
         overflow: hidden;
-        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
     }
 
-    .modal-header {
+    .enhanced-modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px;
-        border-bottom: 1px solid var(--border-color);
-        background: var(--section);
+        padding: 25px 30px;
+        border-bottom: 2px solid var(--border-color);
+        background: linear-gradient(135deg, var(--section), var(--card-bg));
     }
 
-    .modal-header h3 {
+    .enhanced-modal-header h3 {
         margin: 0;
         color: var(--text-color);
-        font-size: 18px;
-        font-weight: 600;
+        font-size: 20px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .close-btn {
+    .enhanced-modal-header h3::before {
+        content: "📨";
+        font-size: 24px;
+    }
+
+    .enhanced-close-btn {
         background: none;
         border: none;
-        font-size: 20px;
+        font-size: 22px;
         cursor: pointer;
-        padding: 5px;
+        padding: 8px;
         color: var(--text-color);
         opacity: 0.7;
+        border-radius: 50%;
         transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .close-btn:hover {
+    .enhanced-close-btn:hover {
         opacity: 1;
-        color: var(--error-color);
-        transform: scale(1.1);
+        background: var(--section);
+        transform: rotate(90deg);
     }
 
-    .modal-content {
-        padding: 20px;
-        max-height: calc(80vh - 80px);
+    .enhanced-modal-content {
+        padding: 0;
+        max-height: calc(85vh - 100px);
         overflow-y: auto;
-        background: var(--card-bg);
     }
 
-    .form-group {
-        margin-bottom: 20px;
+    /* ===== تنسيق محسّن لقائمة الإشعارات ===== */
+    .enhanced-notifications-list {
+        padding: 0;
     }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: var(--text-color);
-        font-size: 14px;
-    }
-
-    .form-input,
-    .form-select,
-    .form-textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 14px;
+    .enhanced-notification-item {
+        display: flex;
+        gap: 15px;
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border-color);
         transition: all 0.3s ease;
+        cursor: pointer;
         background: var(--card-bg);
-        color: var(--text-color);
+        position: relative;
     }
 
-    .form-input:focus,
-    .form-select:focus,
-    .form-textarea:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
-        outline: none;
+    .enhanced-notification-item:last-child {
+        border-bottom: none;
     }
 
-    .form-textarea {
-        resize: vertical;
-        min-height: 120px;
-        font-family: inherit;
+    .enhanced-notification-item:hover {
+        background: var(--section);
+        transform: translateX(5px);
     }
 
-    .hidden {
-        display: none;
+    .enhanced-notification-item.unread {
+        background: linear-gradient(135deg, var(--section), color-mix(in srgb, var(--primary-color) 8%, transparent));
+        border-right: 4px solid var(--primary-color);
     }
 
-    .send-btn {
-        width: 100%;
+    .enhanced-notification-item.unread::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
         background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 10px;
+        border-radius: 50%;
     }
 
-    .send-btn:hover {
-        background: var(--hover-color);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px var(--shadow);
-    }
-
-    .send-btn:active {
-        transform: translateY(0);
-    }
-
-    /* ===== أنماط التبويبات مع Dark Mode ===== */
-    .tabs {
-        display: flex;
-        border-bottom: 1px solid var(--border-color);
-        background: var(--section);
-    }
-
-    .tab-btn {
-        flex: 1;
-        padding: 12px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-color);
-        opacity: 0.7;
-        transition: all 0.3s ease;
-        border-bottom: 2px solid transparent;
-    }
-
-    .tab-btn.active {
-        color: var(--primary-color);
-        opacity: 1;
-        border-bottom-color: var(--primary-color);
-        background: var(--card-bg);
-    }
-
-    .tab-btn:hover:not(.active) {
-        background: var(--bg-color);
-        color: var(--text-color);
-        opacity: 1;
-    }
-
-    .tab-content {
-        display: none;
-        padding: 0;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
-
-    /* ===== أنماط قوائم الرسائل مع Dark Mode ===== */
-    .notifications-list,
-    .messages-list {
-        padding: 0;
-    }
-
-    .notification-item,
-    .message-item {
-        display: flex;
-        gap: 12px;
-        padding: 15px;
-        border-bottom: 1px solid var(--border-color);
-        transition: background 0.2s;
-        cursor: pointer;
-        background: var(--card-bg);
-    }
-
-    .notification-item:hover,
-    .message-item:hover {
-        background: var(--section);
-    }
-
-    .notification-item.unread,
-    .message-item.unread {
-        background: var(--section);
-        border-right: 3px solid var(--primary-color);
-    }
-
-    .notification-icon,
-    .message-icon {
-        font-size: 20px;
+    .enhanced-notification-icon {
+        font-size: 22px;
         color: var(--primary-color);
         flex-shrink: 0;
         margin-top: 2px;
+        background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .notification-content,
-    .message-content {
+    .enhanced-notification-content {
         flex: 1;
         min-width: 0;
     }
 
-    .notification-title,
-    .message-title {
-        font-weight: 600;
+    .enhanced-notification-title {
+        font-weight: 700;
         color: var(--text-color);
-        margin-bottom: 4px;
-        font-size: 14px;
+        margin-bottom: 8px;
+        font-size: 16px;
+        line-height: 1.4;
     }
 
-    .notification-preview,
-    .message-preview {
+    .enhanced-notification-preview {
         color: var(--text-color);
         opacity: 0.8;
-        font-size: 13px;
-        margin-bottom: 4px;
-        line-height: 1.4;
+        font-size: 14px;
+        margin-bottom: 8px;
+        line-height: 1.5;
         display: -webkit-box;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
-    .notification-time,
-    .message-time {
+    .enhanced-notification-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .enhanced-notification-time {
         color: var(--text-color);
         opacity: 0.6;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .enhanced-notification-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
         font-size: 11px;
+        font-weight: 600;
     }
 
-    .loading {
+    /* ===== حالات خاصة ===== */
+    .enhanced-loading {
         text-align: center;
-        padding: 40px;
+        padding: 60px 30px;
         color: var(--text-color);
         opacity: 0.7;
-        font-size: 14px;
+        font-size: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: var(--text-color);
-        opacity: 0.7;
-    }
-
-    .empty-state .icon {
-        font-size: 48px;
-        margin-bottom: 10px;
+    .enhanced-loading::before {
+        content: "⏳";
+        font-size: 40px;
         opacity: 0.5;
     }
 
-    .empty-state p {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    /* ===== رسائل الخطأ والنجاح مع Dark Mode ===== */
-    .message-status {
-        padding: 10px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        font-size: 14px;
+    .enhanced-empty-state {
         text-align: center;
+        padding: 60px 30px;
+        color: var(--text-color);
+        opacity: 0.7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
 
-    .message-status.success {
-        background: var(--success-bg);
-        color: var(--success-color);
-        border: 1px solid var(--success-border);
+    .enhanced-empty-state .icon {
+        font-size: 60px;
+        opacity: 0.4;
     }
 
-    .message-status.error {
-        background: var(--error-bg);
-        color: var(--error-color);
-        border: 1px solid var(--error-border);
+    .enhanced-empty-state p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
     }
 
-    .message-status.warning {
-        background: var(--warning-bg);
-        color: var(--warning-color);
-        border: 1px solid var(--warning-border);
+    .enhanced-empty-state .subtext {
+        font-size: 14px;
+        opacity: 0.6;
+        margin-top: 5px;
     }
 
     /* ===== الظل الخلفي للنوافذ ===== */
@@ -480,6 +405,65 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         z-index: 9999;
+    }
+
+    /* ===== تحسينات التجاوب ===== */
+    @media (max-width: 768px) {
+        .enhanced-notifications-modal {
+            width: 98vw;
+            height: 90vh;
+            max-height: 90vh;
+            border-radius: 12px;
+        }
+        
+        .enhanced-modal-header {
+            padding: 20px;
+        }
+        
+        .enhanced-modal-header h3 {
+            font-size: 18px;
+        }
+        
+        .enhanced-notification-item {
+            padding: 15px 20px;
+            gap: 12px;
+        }
+        
+        .enhanced-notification-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+        
+        .enhanced-notification-title {
+            font-size: 15px;
+        }
+        
+        .enhanced-notification-preview {
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .enhanced-notifications-modal {
+            height: 95vh;
+            max-height: 95vh;
+        }
+        
+        .enhanced-modal-header {
+            padding: 15px;
+        }
+        
+        .enhanced-notification-item {
+            padding: 12px 15px;
+            gap: 10px;
+        }
+        
+        .enhanced-notification-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
     }
 
     /* ===== تحسينات الأداء والانتقالات ===== */
@@ -532,58 +516,41 @@
 {% block usertools %}
 {% if has_permission %}
 <div id="user-tools">
-
-
     <div class="admin-icons">
-        <!-- 🔔 إشعارات -->
-        <button class="admin-icon-btn" onclick="showNotifications()" title="الإشعارات">
+        <!-- 🔔 إشعارات محسنة فقط -->
+        <button class="admin-icon-btn" onclick="showEnhancedNotifications()" title="رسائل الطلاب الواردة">
             🔔
             <span class="notification-badge" id="adminNotificationBadge">{{ unread_count }}</span>
         </button>
 
-        <!-- ✉️ مراسلة فردية -->
-        <button class="admin-icon-btn" onclick="openIndividualMessaging()" title="مراسلة فردية">
-            ✉️
-        </button>
-
         {% block userlinks %}
-
         <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
             {% csrf_token %}
             <button type="submit">{% translate '⎋' %}</button>
         </form>
-
         {% endblock %}
     </div>
-
 </div>
 {% endif %}
 {% endblock %}
 
 {% block extrahead %}
 <script>
-    // ===== دالة تبديل Dark Mode مع الأداء المحسن =====
+    // ===== دوال Dark Mode الأساسية =====
     function toggleDarkMode() {
         const html = document.documentElement;
         const isDark = html.classList.toggle('dark-mode');
         const themeToggle = document.querySelector('.theme-toggle-btn');
 
-        // تحديث الأيقونة
         if (themeToggle) {
             themeToggle.textContent = isDark ? '☀️' : '🌙';
         }
 
-        // حفظ التفضيل في localStorage
         localStorage.setItem('darkMode', isDark);
-
-        // إضافة تأثير سلس
         html.style.transition = 'all 0.3s ease';
-
-        // تحديث meta theme-color للجوال
         updateThemeColor(isDark);
     }
 
-    // ===== تحديث لون ثيم المتصفح للجوال =====
     function updateThemeColor(isDark) {
         const themeColor = document.querySelector('meta[name="theme-color"]');
         if (themeColor) {
@@ -591,9 +558,8 @@
         }
     }
 
-    // ===== تحميل الوضع المحفوظ عند بدء التشغيل =====
+    // ===== تهيئة Dark Mode عند التحميل =====
     document.addEventListener('DOMContentLoaded', function () {
-        // تحميل إعدادات Dark Mode
         const savedDarkMode = localStorage.getItem('darkMode') === 'true';
         const html = document.documentElement;
         const themeToggle = document.querySelector('.theme-toggle-btn');
@@ -609,19 +575,16 @@
 
         updateThemeColor(savedDarkMode);
 
-        // تحسين الأداء بإزالة الانتقالات المؤقتة بعد التحميل
         setTimeout(() => {
             html.style.transition = '';
         }, 300);
 
-        // تحميل عدد الإشعارات غير المقروءة (الوظيفة الأصلية)
-        loadAdminUnreadCount();
-
-        // إضافة زر Dark Mode تلقائياً إذا لم يكن موجوداً
         ensureDarkModeButton();
+        
+        // تحديث عداد الإشعارات
+        loadEnhancedNotificationCount();
     });
 
-    // ===== إضافة زر Dark Mode تلقائياً إذا لم يكن موجوداً =====
     function ensureDarkModeButton() {
         if (!document.querySelector('.theme-toggle-btn')) {
             const userTools = document.querySelector('#user-tools');
@@ -632,7 +595,6 @@
                 themeButton.title = 'تبديل الوضع الداكن';
                 themeButton.onclick = toggleDarkMode;
 
-                // إضافة الزر بجانب أيقونات الإدارة
                 const adminIcons = document.querySelector('.admin-icons');
                 if (adminIcons) {
                     adminIcons.insertBefore(themeButton, adminIcons.firstChild);
@@ -643,24 +605,7 @@
         }
     }
 
-    // ===== الوظائف الأصلية محفوظة بالكامل مع تحسينات الأداء =====
-    function loadAdminUnreadCount() {
-        fetch('/messaging/unread/admin/1/')
-            .then(response => response.json())
-            .then(data => {
-                const badge = document.getElementById('adminNotificationBadge');
-                if (badge && data.unread_count > 0) {
-                    badge.textContent = data.unread_count;
-                    badge.style.display = 'flex';
-                } else if (badge) {
-                    badge.style.display = 'none';
-                }
-            })
-            .catch(error => {
-                console.error('Error loading admin notifications:', error);
-            });
-    }
-
+    // ===== دوال إدارة النوافذ =====
     function createModalOverlay() {
         const overlay = document.createElement('div');
         overlay.className = 'modal-overlay';
@@ -670,339 +615,128 @@
     }
 
     function closeAllModals() {
-        document.querySelectorAll('.messaging-modal, .modal-overlay').forEach(el => {
+        document.querySelectorAll('.enhanced-notifications-modal, .modal-overlay').forEach(el => {
             el.remove();
         });
     }
 
-    function showNotifications() {
+    // ===== دوال الإشعارات المحسنة (الاستقبال فقط) =====
+    function showEnhancedNotifications() {
         closeAllModals();
         const overlay = createModalOverlay();
 
         const notificationsHTML = `
-            <div class="messaging-modal">
-                <div class="modal-header">
-                    <h3>الإشعارات والرسائل</h3>
-                    <button class="close-btn" onclick="closeAllModals()">✕</button>
+            <div class="enhanced-notifications-modal">
+                <div class="enhanced-modal-header">
+                    <h3>رسائل الطلاب الواردة</h3>
+                    <button class="enhanced-close-btn" onclick="closeAllModals()">✕</button>
                 </div>
-                <div class="modal-content">
-                    <div class="tabs">
-                        <button class="tab-btn active" onclick="switchTab('notifications')">الإشعارات</button>
-                        <button class="tab-btn" onclick="switchTab('messages')">الرسائل</button>
-                    </div>
-                    <div id="notifications-tab" class="tab-content active">
-                        <div class="notifications-list" id="notificationsList">
-                            <div class="loading">جاري تحميل الإشعارات...</div>
-                        </div>
-                    </div>
-                    <div id="messages-tab" class="tab-content">
-                        <div class="messages-list" id="messagesList">
-                            <div class="loading">جاري تحميل الرسائل...</div>
-                        </div>
+                <div class="enhanced-modal-content">
+                    <div class="enhanced-notifications-list" id="enhancedNotificationsList">
+                        <div class="enhanced-loading">جاري تحميل الرسائل...</div>
                     </div>
                 </div>
             </div>
         `;
 
         document.body.insertAdjacentHTML('beforeend', notificationsHTML);
-        loadNotifications();
+        loadEnhancedNotifications();
     }
 
-    function openBroadcastMessaging() {
-        closeAllModals();
-        const overlay = createModalOverlay();
-
-        const messagingHTML = `
-            <div class="messaging-modal">
-                <div class="modal-header">
-                    <h3>مراسلة جماعية</h3>
-                    <button class="close-btn" onclick="closeAllModals()">✕</button>
-                </div>
-                <div class="modal-content">
-                    <div class="form-group">
-                        <label>نوع المراسلة:</label>
-                        <select id="message-type" class="form-select" onchange="toggleMessageType()">
-                            <option value="bulk">مراسلة جماعية</option>
-                            <option value="individual">مراسلة فردية</option>
-                        </select>
-                    </div>
-                    <div id="bulk-message" class="message-type-content">
-                        <div class="form-group">
-                            <label>المستلمون:</label>
-                            <select id="bulk-recipient-type" class="form-select" onchange="toggleBulkOptions()">
-                                <option value="all_students">كل الطلاب</option>
-                                <option value="course_students">طلاب كورس محدد</option>
-                            </select>
-                        </div>
-                        <div id="course-selector" class="form-group hidden">
-                            <label>اختر الكورس:</label>
-                            <select id="course-id" class="form-select">
-                                <option value="">جاري تحميل الكورسات...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="individual-message" class="message-type-content hidden">
-                        <div class="form-group">
-                            <label>اختر الطالب:</label>
-                            <select id="student-id" class="form-select">
-                                <option value="">جاري تحميل الطلاب...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>عنوان الرسالة:</label>
-                        <input type="text" id="message-title" class="form-input" placeholder="عنوان الرسالة" required>
-                    </div>
-                    <div class="form-group">
-                        <label>محتوى الرسالة:</label>
-                        <textarea id="message-content" class="form-textarea" placeholder="اكتب محتوى الرسالة هنا..." rows="5" required></textarea>
-                    </div>
-                    <button class="send-btn" onclick="sendAdminMessage()">إرسال الرسالة</button>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', messagingHTML);
-        loadFormData();
-    }
-
-    function openIndividualMessaging() {
-        openBroadcastMessaging();
-        document.getElementById('message-type').value = 'individual';
-        toggleMessageType();
-    }
-
-    function loadFormData() {
-        // تحميل قائمة الكورسات
-        fetch('/admins/courses-list/')
-            .then(response => response.json())
-            .then(data => {
-                const courseSelect = document.getElementById('course-id');
-                if (courseSelect) {
-                    courseSelect.innerHTML = '<option value="">اختر الكورس</option>';
-                    data.courses.forEach(course => {
-                        const option = document.createElement('option');
-                        option.value = course.id;
-                        option.textContent = course.title;
-                        courseSelect.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error loading courses:', error);
-                const courseSelect = document.getElementById('course-id');
-                if (courseSelect) {
-                    courseSelect.innerHTML = '<option value="">خطأ في تحميل الكورسات</option>';
-                }
-            });
-
-        // تحميل قائمة الطلاب
-        fetch('/admins/students-list/')
-            .then(response => response.json())
-            .then(data => {
-                const studentSelect = document.getElementById('student-id');
-                if (studentSelect) {
-                    studentSelect.innerHTML = '<option value="">اختر الطالب</option>';
-                    data.students.forEach(student => {
-                        const option = document.createElement('option');
-                        option.value = student.id;
-                        option.textContent = `${student.name} - ${student.phone_number}`;
-                        studentSelect.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error loading students:', error);
-                const studentSelect = document.getElementById('student-id');
-                if (studentSelect) {
-                    studentSelect.innerHTML = '<option value="">خطأ في تحميل الطلاب</option>';
-                }
-            });
-    }
-
-    function toggleMessageType() {
-        const type = document.getElementById('message-type').value;
-        const bulkMessage = document.getElementById('bulk-message');
-        const individualMessage = document.getElementById('individual-message');
-
-        if (bulkMessage && individualMessage) {
-            bulkMessage.classList.toggle('hidden', type !== 'bulk');
-            individualMessage.classList.toggle('hidden', type !== 'individual');
-        }
-    }
-
-    function toggleBulkOptions() {
-        const type = document.getElementById('bulk-recipient-type').value;
-        const courseSelector = document.getElementById('course-selector');
-        if (courseSelector) {
-            courseSelector.classList.toggle('hidden', type !== 'course_students');
-        }
-    }
-
-    function sendAdminMessage() {
-        const messageType = document.getElementById('message-type').value;
-        const title = document.getElementById('message-title').value;
-        const content = document.getElementById('message-content').value;
-
-        if (!title || !content) {
-            alert('يرجى ملء جميع الحقول');
-            return;
-        }
-
-        const messageData = {
-            title: title,
-            content: content,
-            sender_type: 'admin',
-            sender_id: 1
-        };
-
-        if (messageType === 'bulk') {
-            messageData.receiver_type = document.getElementById('bulk-recipient-type').value;
-            if (messageData.receiver_type === 'course_students') {
-                const courseId = document.getElementById('course-id').value;
-                if (!courseId) {
-                    alert('يرجى اختيار الكورس');
-                    return;
-                }
-                messageData.course_id = courseId;
-            }
-        } else {
-            const studentId = document.getElementById('student-id').value;
-            if (!studentId) {
-                alert('يرجى اختيار الطالب');
-                return;
-            }
-            messageData.receiver_type = 'student';
-            messageData.receiver_id = studentId;
-        }
-
-        fetch('/messaging/send/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(messageData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('تم إرسال الرسالة بنجاح');
-                    closeAllModals();
-                } else {
-                    alert('حدث خطأ في الإرسال: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('حدث خطأ في الإرسال');
-            });
-    }
-
-    function switchTab(tabName) {
-        // إزالة النشاط من جميع التبويبات
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // إضافة النشاط للتبويب المحدد
-        const targetTab = document.getElementById(tabName + '-tab');
-        if (targetTab) {
-            targetTab.classList.add('active');
-        }
-
-        if (event && event.target) {
-            event.target.classList.add('active');
-        }
-
-        if (tabName === 'notifications') {
-            loadNotifications();
-        } else {
-            loadMessages();
-        }
-    }
-
-    function loadNotifications() {
-        const notificationsList = document.getElementById('notificationsList');
+    function loadEnhancedNotifications() {
+        const notificationsList = document.getElementById('enhancedNotificationsList');
         if (!notificationsList) return;
 
-        notificationsList.innerHTML = '<div class="loading">جاري تحميل الإشعارات...</div>';
-
-        // محاكاة تحميل الإشعارات
-        setTimeout(() => {
-            notificationsList.innerHTML = `
-                <div class="notification-item unread">
-                    <div class="notification-icon">📢</div>
-                    <div class="notification-content">
-                        <div class="notification-title">إشعار جديد</div>
-                        <div class="notification-preview">تم تسجيل طالب جديد في النظام</div>
-                        <div class="notification-time">منذ ٥ دقائق</div>
+        fetch('/admins/get_admin_notifications/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.notifications && data.notifications.length > 0) {
+                    let notificationsHTML = '';
+                    data.notifications.forEach(notification => {
+                        const isUnread = !notification.is_read;
+                        const badgeText = isUnread ? 'جديد' : 'مقروء';
+                        
+                        notificationsHTML += `
+                            <div class="enhanced-notification-item ${isUnread ? 'unread' : ''}">
+                                <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
+                                <div class="enhanced-notification-content">
+                                    <div class="enhanced-notification-title">${notification.title}</div>
+                                    <div class="enhanced-notification-preview">${notification.preview}</div>
+                                    <div class="enhanced-notification-meta">
+                                        <div class="enhanced-notification-time">${notification.time}</div>
+                                        <div class="enhanced-notification-badge">${badgeText}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    notificationsList.innerHTML = notificationsHTML;
+                } else {
+                    notificationsList.innerHTML = `
+                        <div class="enhanced-empty-state">
+                            <div class="icon">📭</div>
+                            <p>لا توجد رسائل واردة</p>
+                            <div class="subtext">سيظهر هنا أي رسائل من الطلاب</div>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading notifications:', error);
+                notificationsList.innerHTML = `
+                    <div class="enhanced-empty-state">
+                        <div class="icon">⚠️</div>
+                        <p>حدث خطأ في تحميل الرسائل</p>
+                        <div class="subtext">يرجى المحاولة مرة أخرى</div>
                     </div>
-                </div>
-                <div class="notification-item">
-                    <div class="notification-icon">💰</div>
-                    <div class="notification-content">
-                        <div class="notification-title">شحن رصيد</div>
-                        <div class="notification-preview">قام طالب بشحن رصيد بمبلغ 100 جنيه</div>
-                        <div class="notification-time">منذ ساعة</div>
-                    </div>
-                </div>
-                <div class="empty-state">
-                    <div class="icon">🔔</div>
-                    <p>لا توجد المزيد من الإشعارات</p>
-                </div>
-            `;
-        }, 1000);
+                `;
+            });
     }
 
-    function loadMessages() {
-        const messagesList = document.getElementById('messagesList');
-        if (!messagesList) return;
-
-        messagesList.innerHTML = '<div class="loading">جاري تحميل الرسائل...</div>';
-
-        // محاكاة تحميل الرسائل
-        setTimeout(() => {
-            messagesList.innerHTML = `
-                <div class="message-item unread">
-                    <div class="message-icon">👤</div>
-                    <div class="message-content">
-                        <div class="message-title">رسالة من الطالب أحمد</div>
-                        <div class="message-preview">أود الاستفسار عن موعد الامتحان النهائي...</div>
-                        <div class="message-time">منذ ٣٠ دقيقة</div>
-                    </div>
-                </div>
-                <div class="message-item">
-                    <div class="message-icon">👤</div>
-                    <div class="message-content">
-                        <div class="message-title">رسالة من الطالب محمد</div>
-                        <div class="message-preview">شكراً على الجهود المبذولة في المنصة...</div>
-                        <div class="message-time">منذ ساعتين</div>
-                    </div>
-                </div>
-                <div class="empty-state">
-                    <div class="icon">✉️</div>
-                    <p>لا توجد المزيد من الرسائل</p>
-                </div>
-            `;
-        }, 1000);
+    function loadEnhancedNotificationCount() {
+        // استخدام المسار الحالي لجلب الرسائل ثم حساب غير المقروءة
+        fetch('/admins/get_admin_messages/')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('adminNotificationBadge');
+                if (badge) {
+                    if (data.messages && data.messages.length > 0) {
+                        // حساب الرسائل غير المقروءة
+                        const unreadCount = data.messages.filter(msg => !msg.is_read).length;
+                        if (unreadCount > 0) {
+                            badge.textContent = unreadCount;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading notification count:', error);
+                const badge = document.getElementById('adminNotificationBadge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            });
     }
 
-    // ===== تحسينات الأداء والأمان =====
-    // منع التحميل المزدوج للبيانات
-    let isDataLoading = false;
+    // ===== تحديث العداد كل 30 ثانية =====
+    setInterval(loadEnhancedNotificationCount, 30000);
 
-    // تحسين معالجة الأخطاء
-    function handleApiError(error, context) {
-        console.error(`Error in ${context}:`, error);
-        // يمكن إضافة إشعار للمستخدم هنا
-    }
-
-    // تحسين إدارة الذاكرة
     window.addEventListener('beforeunload', function () {
         closeAllModals();
     });
+
+    // ❌ تم حذف جميع دوال الإرسال:
+    // - openBroadcastMessaging()
+    // - openIndividualMessaging() 
+    // - sendAdminMessage()
+    // - loadFormData()
+    // - toggleMessageType()
+    // - toggleBulkOptions()
+    // - switchTab() (التبويبات غير ضرورية الآن)
 </script>
 {% endblock %}

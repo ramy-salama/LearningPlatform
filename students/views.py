@@ -1,8 +1,11 @@
-# students/views.py - محدث ومصحح
+# students/views.py - محدث ومصحح مع إضافة المراسلة السريعة
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_protect
+from django.contrib import messages
 from django.db.models import Prefetch
 import json
 from .models import Student
@@ -10,6 +13,7 @@ from enrollments.models import Enrollment
 from messaging.models import Message
 from courses.models import Course
 from decimal import Decimal, InvalidOperation
+from admins.models import Admin  # ✅ استيراد نموذج Admin
 
 # ===============================
 # دوال الطالب الأساسية (محفوظة بالكامل مع تحسينات الأداء)
@@ -255,7 +259,7 @@ def get_student_notifications(request):
 
 @csrf_exempt
 def send_student_message(request):
-    """إرسال رسالة من الطالب إلى الإدارة - مصحح"""
+    """إرسال رسالة من الطالب إلى الإدارة - مصحح بالكامل"""
     if 'student_id' not in request.session:
         return JsonResponse({'status': 'error', 'message': 'يجب تسجيل الدخول'})
 
@@ -271,11 +275,19 @@ def send_student_message(request):
             if 'title' not in data or 'content' not in data:
                 return JsonResponse({'status': 'error', 'message': 'العنوان والمحتوى مطلوبان'})
 
-            # ✅ إصلاح المشكلة: استخدام الحقول الصحيحة لنموذج Message
+            # ✅ إصلاح المشكلة: الحصول على أول مسؤول كـ receiver_id
+            try:
+                admin_user = Admin.objects.first()  # أول مسؤول في النظام
+                admin_id = admin_user.id if admin_user else 1  # استخدام 1 إذا لم يوجد مسؤول
+            except:
+                admin_id = 1  # قيمة افتراضية
+
+            # ✅ إنشاء الرسالة مع receiver_id محددة للإدارة
             message = Message.objects.create(
                 sender_type='student',
-                sender_id=student_id,  # ✅ استخدام sender_id بدلاً من sender_student_id
+                sender_id=student_id,
                 receiver_type='admin',
+                receiver_id=admin_id,  # ✅ الآن receiver_id محدد
                 title=data['title'],
                 content=data['content']
             )
@@ -382,3 +394,57 @@ def get_unread_student_messages(request):
 
     except Exception as e:
         return JsonResponse({'messages': [], 'error': str(e)})
+
+# ===============================
+# دوال المراسلة السريعة من الإدارة (مضافة حديثاً)
+# ===============================
+
+@staff_member_required
+def quick_message(request, student_id):
+    """عرض صفحة المراسلة السريعة"""
+    try:
+        student = Student.objects.get(id=student_id)
+        return render(request, 'admin/students/quick_message.html', {
+            'student': student
+        })
+    except Student.DoesNotExist:
+        messages.error(request, 'الطالب غير موجود')
+        return redirect('/admin/students/student/')
+
+@staff_member_required
+@csrf_protect
+def send_quick_message(request, student_id):
+    """إرسال الرسالة مباشرة"""
+    if request.method == 'POST':
+        try:
+            student = Student.objects.get(id=student_id)
+            admin_user = Admin.objects.get(email=request.user.email)
+            
+            title = request.POST.get('title', 'رسالة من الإدارة')
+            content = request.POST.get('content', '')
+            
+            if not content:
+                messages.error(request, 'يرجى كتابة محتوى الرسالة')
+                return redirect('quick_message', student_id=student_id)
+            
+            # إنشاء الرسالة
+            Message.objects.create(
+                sender_type='admin',
+                sender_id=admin_user.id,
+                receiver_type='student',
+                receiver_id=student_id,
+                title=title,
+                content=content
+            )
+            
+            messages.success(request, f'✅ تم إرسال الرسالة إلى {student.name} بنجاح!')
+            return redirect('/admin/students/student/')
+            
+        except Student.DoesNotExist:
+            messages.error(request, '❌ الطالب غير موجود')
+        except Admin.DoesNotExist:
+            messages.error(request, '❌ صلاحية غير متاحة')
+        except Exception as e:
+            messages.error(request, f'❌ حدث خطأ: {str(e)}')
+    
+    return redirect('/admin/students/student/')

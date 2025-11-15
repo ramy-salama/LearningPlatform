@@ -7,12 +7,13 @@ import json
 from .models import Message
 from students.models import Student
 from teachers.models import Teacher
+from admins.models import Admin
 from courses.models import Course
 from enrollments.models import Enrollment
 
 @csrf_exempt
 def send_message(request):
-    """إرسال رسائل من جميع الأنواع - مصحح"""
+    """إرسال رسائل من جميع الأنواع - مصحح بالكامل"""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -23,22 +24,30 @@ def send_message(request):
                 if field not in data:
                     return JsonResponse({'status': 'error', 'message': f'حقل {field} مطلوب'})
 
+            # ✅ إصلاح مشكلة receiver_id للإدارة
+            receiver_type = data.get('receiver_type', 'student')
+            receiver_id = data.get('receiver_id')
+            
+            # إذا كان المستقبل إدارة ولم يتم تحديد receiver_id
+            if receiver_type == 'admin' and not receiver_id:
+                try:
+                    admin_user = Admin.objects.first()  # أول مسؤول في النظام
+                    receiver_id = admin_user.id if admin_user else 1
+                except:
+                    receiver_id = 1
+
             # إنشاء كائن الرسالة (باستخدام الحقول الأساسية فقط)
             message_data = {
                 'sender_type': data['sender_type'],
                 'sender_id': data['sender_id'],
                 'title': data['title'],
                 'content': data['content'],
-                'receiver_type': data.get('receiver_type', 'student'),
+                'receiver_type': receiver_type,
+                'receiver_id': receiver_id,
                 'course_id': data.get('course_id'),
                 'parent_message_id': data.get('parent_message_id'),
                 'is_reply': bool(data.get('parent_message_id'))
             }
-
-            # إضافة receiver_id إذا كان موجوداً
-            receiver_id = data.get('receiver_id')
-            if receiver_id:
-                message_data['receiver_id'] = receiver_id
 
             # إنشاء الرسالة
             message = Message.objects.create(**message_data)
@@ -56,8 +65,18 @@ def send_message(request):
                     ).select_related('student').only('student_id')
                     students = [enrollment.student for enrollment in enrollments]
                 
-                # لا داعي لإشعارات منفصلة - الرسالة الرئيسية تكفي
-                pass
+                # إنشاء رسالة منفصلة لكل طالب
+                for student in students:
+                    if student.id != data['sender_id']:  # تجنب إرسال الرسالة للمرسل
+                        Message.objects.create(
+                            sender_type=data['sender_type'],
+                            sender_id=data['sender_id'],
+                            receiver_type='student',
+                            receiver_id=student.id,
+                            course_id=data.get('course_id'),
+                            title=data['title'],
+                            content=data['content']
+                        )
             
             return JsonResponse({'status': 'success', 'message_id': message.id})
         
@@ -73,8 +92,8 @@ def get_user_messages(request, user_type, user_id):
     try:
         # استعلام فعال مع prefetch_related للردود
         messages = Message.objects.filter(
-            receiver_type=user_type,
-            receiver_id=user_id
+            Q(receiver_type=user_type, receiver_id=user_id) |
+            Q(sender_type=user_type, sender_id=user_id)
         ).exclude(
             parent_message__isnull=False  # جلب الرسائل الرئيسية فقط
         ).prefetch_related(
@@ -87,7 +106,7 @@ def get_user_messages(request, user_type, user_id):
             )
         ).only(
             'id', 'title', 'content', 'is_read', 'created_at',
-            'sender_type', 'sender_id'
+            'sender_type', 'sender_id', 'receiver_type', 'receiver_id'
         ).order_by('-created_at')[:50]
 
         message_list = []
@@ -101,6 +120,9 @@ def get_user_messages(request, user_type, user_id):
                 'sender_type': msg.sender_type,
                 'sender_name': msg.get_sender_name(),
                 'sender_id': msg.sender_id,
+                'receiver_type': msg.receiver_type,
+                'receiver_name': msg.get_receiver_name(),
+                'receiver_id': msg.receiver_id,
                 'replies': []
             }
             
@@ -209,8 +231,8 @@ def get_student_messages(request, student_id):
     try:
         # استعلام فعال
         messages = Message.objects.filter(
-            receiver_type='student',
-            receiver_id=student_id
+            Q(receiver_type='student', receiver_id=student_id) |
+            Q(sender_type='student', sender_id=student_id)
         ).only(
             'id', 'title', 'content', 'is_read', 'created_at', 'sender_type', 'sender_id'
         ).order_by('-created_at')[:20]
@@ -236,8 +258,8 @@ def get_teacher_messages(request, teacher_id):
     """جلب رسائل معلم محدد - محسن"""
     try:
         messages = Message.objects.filter(
-            receiver_type='teacher',
-            receiver_id=teacher_id
+            Q(receiver_type='teacher', receiver_id=teacher_id) |
+            Q(sender_type='teacher', sender_id=teacher_id)
         ).only(
             'id', 'title', 'content', 'is_read', 'created_at', 'sender_type', 'sender_id'
         ).order_by('-created_at')[:20]
@@ -263,8 +285,8 @@ def get_admin_messages(request, admin_id):
     """جلب رسائل مسؤول محدد - محسن"""
     try:
         messages = Message.objects.filter(
-            receiver_type='admin',
-            receiver_id=admin_id
+            Q(receiver_type='admin', receiver_id=admin_id) |
+            Q(sender_type='admin', sender_id=admin_id)
         ).only(
             'id', 'title', 'content', 'is_read', 'created_at', 'sender_type', 'sender_id'
         ).order_by('-created_at')[:20]
@@ -297,8 +319,8 @@ def search_messages(request, user_type, user_id):
         
         # استعلام بحث فعال
         messages = Message.objects.filter(
-            Q(receiver_type=user_type) &
-            Q(receiver_id=user_id) &
+            (Q(receiver_type=user_type, receiver_id=user_id) |
+             Q(sender_type=user_type, sender_id=user_id)) &
             (Q(title__icontains=query) | Q(content__icontains=query))
         ).only(
             'id', 'title', 'content', 'is_read', 'created_at', 'sender_type', 'sender_id'

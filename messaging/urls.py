@@ -1,4 +1,4 @@
-# messaging/urls.py - محدث ومصحح
+# messaging/urls.py - محدث ومصحح (بدون مسارات المعلم)
 from django.urls import path
 from . import views
 

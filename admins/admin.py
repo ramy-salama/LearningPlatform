@@ -1,4 +1,4 @@
-# admins/admin.py - محدث ومكتمل
+# admins/admin.py - محدث مع حذف أيقونات المراسلة فقط
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import path
@@ -21,7 +21,7 @@ class AdminAdmin(admin.ModelAdmin):
         )
     admin_actions.short_description = 'الإجراءات السريعة'
 
-# تحديث admin.py للطلاب لإضافة أيقونات المراسلة
+# تحديث admin.py للطلاب (بدون أيقونات المراسلة)
 from students.models import Student
 from django.contrib import admin as main_admin
 
@@ -33,36 +33,20 @@ except:
 
 @main_admin.register(Student)
 class StudentAdmin(main_admin.ModelAdmin):
-    list_display = ['name', 'phone_number', 'grade', 'year', 'balance', 'student_messaging']
+    list_display = ['name', 'phone_number', 'grade', 'year', 'balance']  # ❌ إزالة student_messaging
     search_fields = ['name', 'phone_number']
     list_filter = ['grade', 'year']
     actions = ['delete_selected']
     
-    def student_messaging(self, obj):
-        return format_html(
-            '<div style="display: flex; gap: 8px; justify-content: center;">'
-            '<button onclick="sendQuickMessage({})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;" title="إرسال رسالة سريعة">'
-            '✉️ رسالة'
-            '</button>'
-            '<button onclick="viewStudentMessages({})" style="background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;" title="عرض الرسائل">'
-            '📨 عرض'
-            '</button>'
-            '</div>',
-            obj.id, obj.id
-        )
-    student_messaging.short_description = 'المراسلة'
-    student_messaging.allow_tags = True
+    # ❌ تم حذف دالة student_messaging بالكامل
+    # ❌ تم حذف الأزرار: ✉️ رسالة و 📨 عرض
     
     def has_add_permission(self, request):
         return False
 
-    class Media:
-        js = ('admin/js/admin_messaging.js',)
-        css = {
-            'all': ('admin/css/admin_messaging.css',)
-        }
+    # ❌ تم حذف class Media بالكامل (لا حاجة لملفات JavaScript)
 
-# تحديث admin.py للمعلمين
+# تحديث admin.py للمعلمين (بدون أيقونة المراسلة)
 from teachers.models import Teacher
 
 # إلغاء التسجيل القديم إذا كان مسجلاً
@@ -92,12 +76,11 @@ class TeacherAdmin(main_admin.ModelAdmin):
             '<div style="display: flex; gap: 5px; flex-wrap: wrap;">'
             '<a class="button" href="{}" style="background: #4CAF50; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">✅ موافقة</a>'
             '<a class="button" href="{}" style="background: #f44336; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">❌ رفض</a>'
-            '<button onclick="sendMessageToTeacher({})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;" title="مراسلة المعلم">✉️ مراسلة</button>'
+            # ❌ تم حذف زر: ✉️ مراسلة
             '</div>',
             f'{obj.id}/approve/',
-            f'{obj.id}/reject/',
-            obj.id,
-            f'{obj.id}/change/'
+            f'{obj.id}/reject/'
+            # ❌ تم حذف: obj.id, f'{obj.id}/change/'
         )
     teacher_actions.short_description = 'الإجراءات'
     
