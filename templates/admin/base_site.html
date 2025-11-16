@@ -321,7 +321,6 @@
         margin-bottom: 8px;
         line-height: 1.5;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -395,6 +394,10 @@
         opacity: 0.6;
         margin-top: 5px;
     }
+    .enhanced-notification-item.unread {
+    background-color: #f0f8ff;
+    border-right: 3px solid #007bff;
+}
 
     /* ===== الظل الخلفي للنوافذ ===== */
     .modal-overlay {
@@ -643,55 +646,75 @@
         loadEnhancedNotifications();
     }
 
-    function loadEnhancedNotifications() {
-        const notificationsList = document.getElementById('enhancedNotificationsList');
-        if (!notificationsList) return;
 
-        fetch('/admins/get_admin_notifications/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.notifications && data.notifications.length > 0) {
-                    let notificationsHTML = '';
-                    data.notifications.forEach(notification => {
-                        const isUnread = !notification.is_read;
-                        const badgeText = isUnread ? 'جديد' : 'مقروء';
-                        
-                        notificationsHTML += `
-                            <div class="enhanced-notification-item ${isUnread ? 'unread' : ''}">
-                                <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
-                                <div class="enhanced-notification-content">
-                                    <div class="enhanced-notification-title">${notification.title}</div>
-                                    <div class="enhanced-notification-preview">${notification.preview}</div>
-                                    <div class="enhanced-notification-meta">
-                                        <div class="enhanced-notification-time">${notification.time}</div>
-                                        <div class="enhanced-notification-badge">${badgeText}</div>
-                                    </div>
+function loadEnhancedNotifications() {
+    const notificationsList = document.getElementById('enhancedNotificationsList');
+    if (!notificationsList) return;
+
+    fetch('/admins/get_admin_notifications/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.notifications && data.notifications.length > 0) {
+                let notificationsHTML = '';
+                data.notifications.forEach(notification => {
+                    const isUnread = !notification.is_read;
+                    
+                    notificationsHTML += `
+                        <div class="enhanced-notification-item ${isUnread ? 'unread' : ''}" 
+                             onclick="toggleMessage(this, ${notification.message_id})">
+                            <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
+                            <div class="enhanced-notification-content">
+                                <div class="enhanced-notification-title">${notification.title}</div>
+                                <div class="enhanced-notification-preview">${notification.preview}</div>
+                                <div class="enhanced-notification-meta">
+                                    <div class="enhanced-notification-time">${notification.time}</div>
+                                    <div class="enhanced-notification-badge">${isUnread ? 'جديد' : 'مقروء'}</div>
                                 </div>
                             </div>
-                        `;
-                    });
-                    notificationsList.innerHTML = notificationsHTML;
-                } else {
-                    notificationsList.innerHTML = `
-                        <div class="enhanced-empty-state">
-                            <div class="icon">📭</div>
-                            <p>لا توجد رسائل واردة</p>
-                            <div class="subtext">سيظهر هنا أي رسائل من الطلاب</div>
                         </div>
                     `;
-                }
-            })
-            .catch(error => {
-                console.error('Error loading notifications:', error);
+                });
+                notificationsList.innerHTML = notificationsHTML;
+            } else {
                 notificationsList.innerHTML = `
                     <div class="enhanced-empty-state">
-                        <div class="icon">⚠️</div>
-                        <p>حدث خطأ في تحميل الرسائل</p>
-                        <div class="subtext">يرجى المحاولة مرة أخرى</div>
+                        <div class="icon">📭</div>
+                        <p>لا توجد رسائل واردة</p>
+                        <div class="subtext">سيظهر هنا أي رسائل من الطلاب</div>
                     </div>
                 `;
-            });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            notificationsList.innerHTML = `
+                <div class="enhanced-empty-state">
+                    <div class="icon">⚠️</div>
+                    <p>حدث خطأ في تحميل الرسائل</p>
+                    <div class="subtext">يرجى المحاولة مرة أخرى</div>
+                </div>
+            `;
+        });
+}
+
+// دالة تغيير حالة الرسالة
+function toggleMessage(element, messageId) {
+    // غير اللون في الواجهة
+    element.classList.remove('unread');
+    
+    // غير البادج من "جديد" لـ "مقروء"
+    const badge = element.querySelector('.enhanced-notification-badge');
+    if (badge) {
+        badge.textContent = 'مقروء';
     }
+    
+    // حدد الرسالة كمقروءة في الداتابيز
+    fetch(`/admins/mark-message-read/${messageId}/`)
+    .then(response => response.json())
+    .then(data => {
+        console.log('تم تحديد الرسالة كمقروءة');
+    });
+}
 
     function loadEnhancedNotificationCount() {
         // استخدام المسار الحالي لجلب الرسائل ثم حساب غير المقروءة
@@ -723,20 +746,12 @@
             });
     }
 
+    
     // ===== تحديث العداد كل 30 ثانية =====
     setInterval(loadEnhancedNotificationCount, 30000);
 
     window.addEventListener('beforeunload', function () {
         closeAllModals();
     });
-
-    // ❌ تم حذف جميع دوال الإرسال:
-    // - openBroadcastMessaging()
-    // - openIndividualMessaging() 
-    // - sendAdminMessage()
-    // - loadFormData()
-    // - toggleMessageType()
-    // - toggleBulkOptions()
-    // - switchTab() (التبويبات غير ضرورية الآن)
 </script>
 {% endblock %}

@@ -867,42 +867,47 @@
             
             document.body.insertAdjacentHTML('beforeend', messagingHTML);
         }
+function sendStudentMessage() {
+    const title = document.getElementById('message-title').value;
+    const content = document.getElementById('message-content').value;
 
-        function sendStudentMessage() {
-            const title = document.getElementById('message-title').value;
-            const content = document.getElementById('message-content').value;
+    if (!title || !content) {
+        alert('يرجى ملء جميع الحقول');
+        return;
+    }
 
-            if (!title || !content) {
-                alert('يرجى ملء جميع الحقول');
-                return;
-            }
+    // التحقق من طول المحتوى (150 حرف كحد أقصى)
+    if (content.length > 150) {
+        alert('الرسالة يجب ألا تزيد عن 150 حرف');
+        return;
+    }
 
-            const messageData = {
-                title: title,
-                content: content
-            };
+    const messageData = {
+        title: title,
+        content: content
+    };
 
-            fetch('/students/send-message/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(messageData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('تم إرسال الرسالة بنجاح');
-                    closeAllModals();
-                } else {
-                    alert('حدث خطأ في الإرسال: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('حدث خطأ في الإرسال');
-            });
+    fetch('/students/send-message/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('تم إرسال الرسالة بنجاح');
+            closeAllModals();
+        } else {
+            alert('حدث خطأ في الإرسال: ' + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('حدث خطأ في الإرسال');
+    });
+}
 
         function markAsRead(messageId) {
             fetch(`/messaging/read/${messageId}/`, {

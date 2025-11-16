@@ -212,51 +212,8 @@ def student_logout(request):
     return redirect('students:student_login')
 
 # ===============================
-# دوال المراسلة الجديدة (مصححة بالكامل)
+# دالة المراسلة الجديدة (مصححة بالكامل)
 # ===============================
-
-def get_student_notifications(request):
-    """الحصول على إشعارات الطالب - محسن"""
-    if 'student_id' not in request.session:
-        return JsonResponse({'messages': []})
-
-    try:
-        student_id = request.session['student_id']
-        
-        # تحسين الاستعلام باستخدام select_related
-        messages = Message.objects.filter(
-            receiver_type='student',
-            receiver_id=student_id
-        ).select_related(
-            'sender_admin',
-            'sender_teacher'
-        ).only(
-            'id',
-            'title',
-            'content',
-            'is_read',
-            'created_at',
-            'sender_type'
-        ).order_by('-created_at')[:10]
-
-        message_list = []
-        for msg in messages:
-            message_list.append({
-                'id': msg.id,
-                'title': msg.title,
-                'content': msg.content,
-                'is_read': msg.is_read,
-                'created_at': msg.created_at.strftime('%Y-%m-%d %H:%M'),
-                'sender_type': msg.sender_type,
-                'sender_name': msg.get_sender_name(),
-                'has_replies': hasattr(msg, 'replies') and msg.replies.exists()
-            })
-
-        return JsonResponse({'messages': message_list})
-
-    except Exception as e:
-        return JsonResponse({'messages': [], 'error': str(e)})
-
 @csrf_exempt
 def send_student_message(request):
     """إرسال رسالة من الطالب إلى الإدارة - مصحح بالكامل"""
@@ -274,6 +231,10 @@ def send_student_message(request):
             # التحقق من البيانات المطلوبة
             if 'title' not in data or 'content' not in data:
                 return JsonResponse({'status': 'error', 'message': 'العنوان والمحتوى مطلوبان'})
+
+            # ✅ التحقق من طول المحتوى (150 حرف كحد أقصى)
+            if len(data['content']) > 150:
+                return JsonResponse({'status': 'error', 'message': 'الرسالة يجب ألا تزيد عن 150 حرف'})
 
             # ✅ إصلاح المشكلة: الحصول على أول مسؤول كـ receiver_id
             try:
@@ -302,118 +263,6 @@ def send_student_message(request):
 
     return JsonResponse({'status': 'error', 'message': 'Method not allowed'})
 
-def get_student_conversation(request, message_id):
-    """جلب محادثة كاملة للطالب - مصحح"""
-    if 'student_id' not in request.session:
-        return JsonResponse({'conversation': []})
-
-    try:
-        student_id = request.session['student_id']
-        
-        # تحسين الاستعلام مع prefetch_related للردود
-        main_message = Message.objects.filter(
-            id=message_id, 
-            receiver_type='student', 
-            receiver_id=student_id
-        ).first()
-        
-        if not main_message:
-            return JsonResponse({'conversation': []})
-        
-        conversation = []
-        
-        # إضافة الرسالة الرئيسية
-        conversation.append({
-            'id': main_message.id,
-            'title': main_message.title,
-            'content': main_message.content,
-            'is_read': main_message.is_read,
-            'created_at': main_message.created_at.strftime('%Y-%m-%d %H:%M'),
-            'sender_type': main_message.sender_type,
-            'sender_name': main_message.get_sender_name(),
-            'is_main': True
-        })
-        
-        # إضافة الردود إذا كان هناك علاقة replies
-        if hasattr(main_message, 'replies'):
-            replies = main_message.replies.all().order_by('created_at')
-            for reply in replies:
-                conversation.append({
-                    'id': reply.id,
-                    'content': reply.content,
-                    'is_read': reply.is_read,
-                    'created_at': reply.created_at.strftime('%Y-%m-%d %H:%M'),
-                    'sender_type': reply.sender_type,
-                    'sender_name': reply.get_sender_name(),
-                    'is_main': False
-                })
-        
-        return JsonResponse({'conversation': conversation})
-    
-    except Message.DoesNotExist:
-        return JsonResponse({'conversation': []})
-    except Exception as e:
-        return JsonResponse({'conversation': [], 'error': str(e)})
-
-def get_unread_student_messages(request):
-    """جلب الرسائل غير المقروءة للطالب - مصحح"""
-    if 'student_id' not in request.session:
-        return JsonResponse({'messages': []})
-
-    try:
-        student_id = request.session['student_id']
-        
-        # استعلام محسن مع select_related
-        messages = Message.objects.filter(
-            receiver_type='student',
-            receiver_id=student_id,
-            is_read=False
-        ).select_related(
-            'sender_admin',
-            'sender_teacher'
-        ).only(
-            'id',
-            'title', 
-            'content',
-            'created_at',
-            'sender_type'
-        ).order_by('-created_at')[:10]
-
-        message_list = []
-        for msg in messages:
-            message_list.append({
-                'id': msg.id,
-                'title': msg.title,
-                'content': msg.content[:150] + '...' if len(msg.content) > 150 else msg.content,
-                'created_at': msg.created_at.strftime('%Y-%m-%d %H:%M'),
-                'sender_type': msg.sender_type,
-                'sender_name': msg.get_sender_name()
-            })
-
-        return JsonResponse({'messages': message_list})
-
-    except Exception as e:
-        return JsonResponse({'messages': [], 'error': str(e)})
-
-# ===============================
-# دوال المراسلة السريعة من الإدارة (مضافة حديثاً)
-# ===============================
-
-@staff_member_required
-def quick_message(request, student_id):
-    """عرض صفحة المراسلة السريعة"""
-    try:
-        student = Student.objects.get(id=student_id)
-        return render(request, 'admin/students/quick_message.html', {
-            'student': student
-        })
-    except Student.DoesNotExist:
-        messages.error(request, 'الطالب غير موجود')
-        return redirect('/admin/students/student/')
-
-@staff_member_required
-@csrf_protect
-def send_quick_message(request, student_id):
     """إرسال الرسالة مباشرة"""
     if request.method == 'POST':
         try:
