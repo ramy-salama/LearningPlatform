@@ -79,7 +79,7 @@
 .app-models {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 }
 
 .model-link {
@@ -90,24 +90,23 @@
     background: var(--section);
     border-radius: 6px;
     text-decoration: none;
-    color: var(--text-color) !important;
     border-right: 4px solid var(--hover-color);
     
 }
 
 .model-link:hover {
+    text-decoration: none;
     background: var(--bg-color);
     box-shadow: 0 2px 6px var(--shadow);
     border: 1px solid var(--hover-color);
     border-right: 4px solid var(--hover-color);
     transform: translateX(1px);
-    transition: all 0.2s ease;
+    transition: all 0.2s ease ;
+    color: var(--hover-color)
 }
 
-.model-link.current-model {
-    background: var(--primary-color);
-    color: white;
-}
+
+
 
 /* ---------- MOBILE DROPDOWN ---------- */
 .mobile-sidebar {
@@ -147,37 +146,7 @@
     }
 }
 
-/* ---------- LIGHT / DARK SUPPORT ---------- */
-body.dark-mode .app-card,
-body[data-theme="dark"] .app-card {
-    background: var(--card-bg) !important;
-    box-shadow: 0 4px 12px var(--shadow) !important;
-    border-left: 5px solid var(--primary-color) !important;
-}
 
-body.dark-mode .app-title,
-body[data-theme="dark"] .app-title {
-    color: var(--text-color) !important;
-}
-
-body.dark-mode .model-link,
-body[data-theme="dark"] .model-link {
-    background: var(--bg-color) !important;
-    color: var(--text-color) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-body.dark-mode .model-link:hover,
-body[data-theme="dark"] .model-link:hover {
-    background: var(--hover-color) !important;
-    color: white !important;
-}
-
-body.dark-mode .model-link.current-model,
-body[data-theme="dark"] .model-link.current-model {
-    background: var(--primary-color) !important;
-    color: white !important;
-}
 </style>
 
 <!-- ---------- MOBILE DROPDOWN ---------- -->

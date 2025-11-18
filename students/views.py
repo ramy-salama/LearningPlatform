@@ -14,6 +14,7 @@ from messaging.models import Message
 from courses.models import Course
 from decimal import Decimal, InvalidOperation
 from admins.models import Admin  # ✅ استيراد نموذج Admin
+from django.http import HttpResponse
 
 # ===============================
 # دوال الطالب الأساسية (محفوظة بالكامل مع تحسينات الأداء)
@@ -102,6 +103,7 @@ def student_login(request):
 
     return render(request, 'students/login.html')
 
+
 def student_dashboard(request):
     if 'student_id' not in request.session:
         return redirect('students:student_login')
@@ -138,6 +140,7 @@ def student_dashboard(request):
         return render(request, 'students/error.html', {
             'error': f'حدث خطأ في تحميل البيانات: {str(e)}'
         })
+
 
 def wallet_topup(request):
     if 'student_id' not in request.session:
@@ -262,38 +265,3 @@ def send_student_message(request):
             return JsonResponse({'status': 'error', 'message': f'حدث خطأ: {str(e)}'})
 
     return JsonResponse({'status': 'error', 'message': 'Method not allowed'})
-
-    """إرسال الرسالة مباشرة"""
-    if request.method == 'POST':
-        try:
-            student = Student.objects.get(id=student_id)
-            admin_user = Admin.objects.get(email=request.user.email)
-            
-            title = request.POST.get('title', 'رسالة من الإدارة')
-            content = request.POST.get('content', '')
-            
-            if not content:
-                messages.error(request, 'يرجى كتابة محتوى الرسالة')
-                return redirect('quick_message', student_id=student_id)
-            
-            # إنشاء الرسالة
-            Message.objects.create(
-                sender_type='admin',
-                sender_id=admin_user.id,
-                receiver_type='student',
-                receiver_id=student_id,
-                title=title,
-                content=content
-            )
-            
-            messages.success(request, f'✅ تم إرسال الرسالة إلى {student.name} بنجاح!')
-            return redirect('/admin/students/student/')
-            
-        except Student.DoesNotExist:
-            messages.error(request, '❌ الطالب غير موجود')
-        except Admin.DoesNotExist:
-            messages.error(request, '❌ صلاحية غير متاحة')
-        except Exception as e:
-            messages.error(request, f'❌ حدث خطأ: {str(e)}')
-    
-    return redirect('/admin/students/student/')

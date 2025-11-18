@@ -2,6 +2,7 @@ from django.db import models
 from students.models import Student
 from courses.models import Course
 
+
 class Enrollment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'قيد الانتظار'),
@@ -26,6 +27,42 @@ class Enrollment(models.Model):
     progress = models.IntegerField(default=0, verbose_name="نسبة الإكمال")
     last_accessed = models.DateTimeField(auto_now=True, verbose_name="آخر دخول")
     
+    # إضف هذا الحقل الجديد
+    completed_lessons = models.JSONField(default=list, verbose_name="الدروس المكتملة")  # بيخزن [1, 2, 3] أي دي الدروس
+    
+    def update_progress(self):
+        """تحديث التقدم بناءً على الدروس المكتملة"""
+        # حساب إجمالي الدروس من خلال الـ modules
+        total_lessons = 0
+        for module in self.course.modules.all():
+            total_lessons += module.lessons.count()
+        
+        if total_lessons > 0:
+            completed_count = len(self.completed_lessons)
+            self.progress = (completed_count / total_lessons) * 100
+        else:
+            self.progress = 0
+        
+        self.save()
+        return self.progress
+
+    def mark_lesson_completed(self, lesson_id):
+        """وضع علامة على درس كمكتمل"""
+        if lesson_id not in self.completed_lessons:
+            self.completed_lessons.append(lesson_id)
+            self.update_progress()  # حدث التقدم تلقائياً
+
+    def get_completed_count(self):
+        """عدد الدروس المكتملة"""
+        return len(self.completed_lessons)
+
+    def get_total_lessons(self):
+        """إجمالي الدروس في الكورس"""
+        total_lessons = 0
+        for module in self.course.modules.all():
+            total_lessons += module.lessons.count()
+        return total_lessons
+
     class Meta:
         verbose_name = 'حجز'
         verbose_name_plural = 'الحجوزات'

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة الاختبارات</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
+        }
+
+        .dark-mode {
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 10px solid var(--primary-color);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 5px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
+        .turn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .turn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .create-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .create-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .exams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .exam-card h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .exam-info {
+            margin: 15px 0;
+        }
+
+        .exam-info div {
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--hover-color);
+        }
+
+        .no-exams {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-color);
+            font-style: italic;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .messages {
+            margin: 20px 0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-right: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-controls">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">إدارة الاختبارات</span>
+        </div>
+        <div class="header-icons">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <a class="turn" href="{% url 'teachers:teacher_dashboard' %}">↶ العودة للوحة التحكم</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>اختباراتك المنشورة</h1>
+            <a href="{% url 'exams:create_exam' %}" class="create-btn">إنشاء اختبار جديد</a>
+        </div>
+
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+
+        {% if exams %}
+        <div class="exams-grid">
+            {% for exam in exams %}
+            <div class="exam-card">
+                <h3>{{ exam.title }}</h3>
+
+                <div class="exam-info">
+                    <div><strong>الكورس:</strong> {{ exam.course.title }}</div>
+                    <div><strong>عدد الأسئلة:</strong> {{ exam.question_set.count }}</div>
+                    <div><strong>المدة:</strong> {{ exam.duration }} دقيقة</div>
+                    <div><strong>درجة كل سؤال:</strong> {{ exam.points_per_question }}</div>
+                    <div><strong>من:</strong> {{ exam.start_date }}</div>
+                    <div><strong>إلى:</strong> {{ exam.end_date }}</div>
+                    <div>
+                        <strong>الحالة:</strong>
+                        <span class="{% if exam.status == 'نشط' %}status-active{% else %}status-inactive{% endif %}">
+                            {{ exam.status }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="{% url 'exams:exam_questions' exam.id %}" class="action-btn">
+                        إدارة الأسئلة
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-exams">
+            <p>لا توجد اختبارات منشورة حالياً</p>
+            <a href="{% url 'exams:create_exam' %}" class="create-btn" style="margin-top: 15px;">إنشاء أول اختبار</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+
+</html>

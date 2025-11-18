@@ -1,6 +1,6 @@
-<!-- students/templates/students/dashboard.html - محدث ومصحح -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
             --primary-color: #ffab25;
             --hover-color: #4a90e2;
             --section: #fdf3ea;
-            --shadow:#d8dada;
+            --shadow: #d8dada;
         }
 
         .dark-mode {
@@ -27,8 +27,8 @@
             --border-color: #404040;
             --primary-color: #357abd;
             --hover-color: #ffab25;
-            --section:#222b3d;
-            --shadow:#28505d;
+            --section: #222b3d;
+            --shadow: #28505d;
         }
 
         * {
@@ -109,7 +109,7 @@
             transform: scale(1.2);
             rotate: -30deg;
         }
-        
+
         .notification-badge {
             position: absolute;
             top: 0;
@@ -213,7 +213,7 @@
             border-radius: 50%;
             margin-left: 15px;
             border: 2px solid var(--border-color);
-            object-fit: cover; /* ✅ تحسين عرض الصورة */
+            object-fit: cover;
         }
 
         .default-avatar {
@@ -288,7 +288,7 @@
             background-color: var(--hover-color);
         }
 
-     
+
         .section h2 {
             color: var(--text-color);
             margin-bottom: 20px;
@@ -319,6 +319,21 @@
             color: var(--text-color);
             margin-bottom: 10px;
             opacity: 0.8;
+        }
+
+        .progress-container {
+            background: var(--border-color);
+            border-radius: 10px;
+            height: 12px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary-color);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
         }
 
         .no-courses {
@@ -358,8 +373,8 @@
             padding: 15px;
             font-size: 14px;
         }
+
         footer span {
-        
             color: var(--hover-color);
             text-align: center;
             padding: 15px;
@@ -442,7 +457,8 @@
             font-size: 14px;
         }
 
-        .form-input, .form-textarea {
+        .form-input,
+        .form-textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
@@ -453,7 +469,8 @@
             transition: all 0.3s ease;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus,
+        .form-textarea:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
             outline: none;
@@ -604,7 +621,8 @@
                 text-align: center;
             }
 
-            .profile-img, .default-avatar {
+            .profile-img,
+            .default-avatar {
                 margin-left: 0;
                 margin-bottom: 15px;
             }
@@ -673,6 +691,13 @@
                 <a href="/courses/" class="btn">تصفح الكورسات</a>
             </div>
 
+            <!-- قسم الاختبارات السريع -->
+            <div class="wallet-section">
+                <h2>🎯 الاختبارات</h2>
+                <p>اختبارات الكورسات المسجلة</p>
+                <a href="{% url 'exams:student_exams' %}" class="btn">عرض الاختبارات المتاحة</a>
+            </div>
+
             <div class="section">
                 <h2>كورساتي المسجلة</h2>
                 {% if enrollments %}
@@ -691,12 +716,44 @@
                         <span style="color: #dc3545;">{{ enrollment.get_status_display }}</span>
                         {% endif %}
                     </p>
-                    <p><strong>التقدم:</strong> {{ enrollment.progress }}%</p>
+
+                    <p><strong>التقدم:</strong> {{ enrollment.progress|default:0 }}%</p>
+                    <div class="progress-container">
+                      <div class="progress-bar" style="width: {{ enrollment.progress|default:0 }}%"></div>
+                    </div>
+                    <p><strong>الدروس المكتملة:</strong> {{ enrollment.completed_lessons|length|default:0 }}/{{ enrollment.get_total_lessons|default:0 }}</p>
+
+
+                    <div class="exam-result" data-course-id="{{ enrollment.course.id }}">
+                        {% for exam in enrollment.course.exam_set.all %}
+                        {% with results=exam.result_set.all %}
+                        {% if results %}
+                        <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">{{ exam.title }}</span></p>
+                        <p><strong>✅ النتيجة:</strong> <span class="exam-score">{{ results.0.percentage|floatformat:1
+                                }}</span>%</p>
+
+                        <script>
+                            // حفظ البيانات في localStorage
+                            localStorage.setItem('exam_result_{{ enrollment.course.id }}',
+                                JSON.stringify({
+                                    title: '{{ exam.title }}',
+                                    score: '{{ results.0.percentage|floatformat:1 }}'
+                                })
+                            );
+                        </script>
+                        {% endif %}
+                        {% endwith %}
+                        {% empty %}
+                        <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">لا توجد اختبارات</span></p>
+                        <p><strong>✅ النتيجة:</strong> <span class="exam-score">--</span>%</p>
+                        {% endfor %}
+                    </div>
 
                     <a href="/courses/{{ enrollment.course.id }}/" class="btn">عرض الكورس</a>
                     {% if enrollment.status == 'active' %}
                     <a href="/courses/{{ enrollment.course.id }}/lessons/" class="btn">بدء التعلم</a>
                     {% endif %}
+
                 </div>
                 {% endfor %}
                 {% else %}
@@ -728,7 +785,7 @@
     </div>
 
     <footer>
-         <span>  درس أونلاين </span>   جميع الحقوق محفوظة  © 2025
+        <span> درس أونلاين </span> جميع الحقوق محفوظة © 2025
     </footer>
 
     <script>
@@ -796,7 +853,7 @@
         function showNotifications() {
             closeAllModals();
             const overlay = createModalOverlay();
-            
+
             const notificationsHTML = `
                 <div class="messaging-modal">
                     <div class="modal-header">
@@ -808,9 +865,9 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.insertAdjacentHTML('beforeend', notificationsHTML);
-            
+
             // تحميل الإشعارات الحقيقية
             fetch('/students/notifications/')
                 .then(response => response.json())
@@ -844,7 +901,7 @@
         function openMessaging() {
             closeAllModals();
             const overlay = createModalOverlay();
-            
+
             const messagingHTML = `
                 <div class="messaging-modal">
                     <div class="modal-header">
@@ -864,63 +921,84 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.insertAdjacentHTML('beforeend', messagingHTML);
         }
-function sendStudentMessage() {
-    const title = document.getElementById('message-title').value;
-    const content = document.getElementById('message-content').value;
 
-    if (!title || !content) {
-        alert('يرجى ملء جميع الحقول');
-        return;
-    }
+        function sendStudentMessage() {
+            const title = document.getElementById('message-title').value;
+            const content = document.getElementById('message-content').value;
 
-    // التحقق من طول المحتوى (150 حرف كحد أقصى)
-    if (content.length > 150) {
-        alert('الرسالة يجب ألا تزيد عن 150 حرف');
-        return;
-    }
+            if (!title || !content) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
 
-    const messageData = {
-        title: title,
-        content: content
-    };
+            // التحقق من طول المحتوى (150 حرف كحد أقصى)
+            if (content.length > 150) {
+                alert('الرسالة يجب ألا تزيد عن 150 حرف');
+                return;
+            }
 
-    fetch('/students/send-message/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(messageData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('تم إرسال الرسالة بنجاح');
-            closeAllModals();
-        } else {
-            alert('حدث خطأ في الإرسال: ' + data.message);
+            const messageData = {
+                title: title,
+                content: content
+            };
+
+            fetch('/students/send-message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(messageData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('تم إرسال الرسالة بنجاح');
+                        closeAllModals();
+                    } else {
+                        alert('حدث خطأ في الإرسال: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('حدث خطأ في الإرسال');
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('حدث خطأ في الإرسال');
-    });
-}
 
         function markAsRead(messageId) {
             fetch(`/messaging/read/${messageId}/`, {
                 method: 'POST'
             })
-            .then(() => {
-                loadUnreadCount();
-                closeAllModals();
-            })
-            .catch(error => {
-                console.error('Error marking as read:', error);
-            });
+                .then(() => {
+                    loadUnreadCount();
+                    closeAllModals();
+                })
+                .catch(error => {
+                    console.error('Error marking as read:', error);
+                });
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.exam-result').forEach(function (element) {
+                const courseId = element.dataset.courseId;
+                const examTitle = element.querySelector('.exam-title');
+                const examScore = element.querySelector('.exam-score');
+
+                // إذا مفيش بيانات، جرب تجيب من localStorage
+                if (examTitle.textContent === 'لا توجد اختبارات' || examScore.textContent === '--') {
+                    const savedData = localStorage.getItem(`exam_result_${courseId}`);
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        examTitle.textContent = data.title;
+                        examScore.textContent = data.score;
+                    }
+                }
+            });
+        });
+
     </script>
 </body>
+
 </html>

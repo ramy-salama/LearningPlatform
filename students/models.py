@@ -57,3 +57,6 @@ class Student(models.Model):
     class Meta:
         verbose_name = 'طالب'
         verbose_name_plural = 'الطلاب'
+
+
+        

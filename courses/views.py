@@ -137,6 +137,10 @@ def lesson_detail(request, course_id, lesson_id):
 
             has_access = bool(enrollment)
 
+            # تحديث تقدم الطالب
+            if has_access and enrollment:
+                enrollment.mark_lesson_completed(lesson.id)
+
             if has_access and lesson.lesson_type == 'video':
                 # استخدام الـ Video ID المشفر
                 video_id = lesson.get_decrypted_video_id()

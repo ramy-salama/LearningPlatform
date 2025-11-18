@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>نتيجة الاختبار - {{ exam.title }}</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
+        }
+
+        .dark-mode {
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 10px solid var(--primary-color);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 5px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
+        .turn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .turn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 80%;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header {
+            margin-bottom: 25px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 14px;
+        }
+
+        .percentage {
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .score-text {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .grade-excellent {
+            background: #28a745;
+            color: white;
+        }
+
+        .grade-good {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .grade-average {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .grade-poor {
+            background: #dc3545;
+            color: white;
+        }
+
+        .result-details {
+            text-align: right;
+            margin: 25px 0;
+        }
+
+        .detail-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .wrong-answers-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+
+        .wrong-answers-section h3 {
+            color: #dc3545;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .wrong-question {
+            background: #f8f9fa;
+            border: 1px solid var(--hover-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: right;
+            border-right: 7px solid var(--hover-color);
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .answer-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .answer-box {
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid;
+        }
+
+        .student-answer {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .correct-answer {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .answer-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .video-message {
+            background: var(--section);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            border-right: 7px solid var(--primary-color);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-color);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .no-wrong-answers {
+            text-align: center;
+            padding: 40px;
+            color: #28a745;
+            font-style: italic;
+            background: var(--section);
+            border-radius: 8px;
+            border: 2px dashed #28a745;
+        }
+    </style>
+</head>
+<body>
+    <!-- الهيدر -->
+    <div class="header">
+        <div class="header-controls">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">الإجابات</span>
+        </div>
+        <div class="header-icons">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <a class="turn" href="{% url 'students:student_dashboard' %}">↶ العودة للوحة التحكم</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- النتيجة العامة -->
+        <div class="result-card">
+            <div class="result-header">
+                <h1>{{ exam.title }}</h1>
+                <p>نتيجة الطالب: {{ student.name }}</p>
+            </div>
+
+            <!-- دائرة النتيجة -->
+            <div class="score-circle">
+                <div class="percentage">{{ result.percentage|floatformat:1 }}%</div>
+                <div class="score-text">النسبة المئوية</div>
+            </div>
+
+            <!-- شارة التقدير -->
+            <div class="grade-badge">
+                {% if result.percentage >= 90 %}
+                امتياز
+                {% elif result.percentage >= 75 %}
+                جيد جداً
+                {% elif result.percentage >= 50 %}
+                مقبول
+                {% else %}
+                راسب
+                {% endif %}
+            </div>
+
+            <!-- تفاصيل النتيجة -->
+            <div class="result-details">
+                <div class="detail-item">
+                    <span>الدرجة الكاملة:</span>
+                    <span id="totalScore">0</span>
+                </div>
+                <div class="detail-item">
+                    <span>الدرجة المحققة:</span>
+                    <span>{{ result.score }} من <span id="totalScore2">0</span></span>
+                </div>
+                <div class="detail-item">
+                    <span>عدد الأسئلة:</span>
+                    <span id="questionCount">0</span>
+                </div>
+                <div class="detail-item">
+                    <span>درجة كل سؤال:</span>
+                    <span id="pointsPerQuestion">0</span>
+                </div>
+                <div class="detail-item">
+                    <span>عدد الإجابات الصحيحة:</span>
+                    <span id="correctAnswers">0</span>
+                </div>
+                <div class="detail-item">
+                    <span>عدد الإجابات الخاطئة:</span>
+                    <span id="wrongAnswers">0</span>
+                </div>
+                <div class="detail-item">
+                    <span>تاريخ الإنجاز:</span>
+                    <span>{{ result.completed_at }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الإجابات الخاطئة -->
+        <div class="wrong-answers-section" id="wrongAnswersSection">
+            <h3>📝 الإجابات الخاطئة</h3>
+            <div id="wrongAnswersList">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+
+        <!-- رسالة فيديو الحل -->
+        <div class="video-message">
+            <h3>🎥 فيديو الحل قريباً</h3>
+            <p>سيتم رفع فيديو شرح حلول الأسئلة قريباً على منصة التعلم</p>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="actions">
+            <a href="{% url 'students:student_dashboard' %}" class="btn btn-primary">
+                العودة للرئيسية
+            </a>
+            <a href="{% url 'exams:student_exams' %}" class="btn btn-secondary">
+                الاختبارات الأخرى
+            </a>
+        </div>
+    </div>
+
+    <!-- بيانات مخفية للجافاسكريبت -->
+    <div id="examResultData" 
+         data-question-count="{{ exam.question_set.count }}"
+         data-points-per-question="{{ exam.points_per_question }}"
+         data-exam-id="{{ exam.id }}"
+         data-student-id="{{ student.id }}"
+         data-result-score="{{ result.score }}"
+         style="display: none;">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const examData = document.getElementById('examResultData');
+            const questionCount = parseInt(examData.getAttribute('data-question-count'));
+            const pointsPerQuestion = parseInt(examData.getAttribute('data-points-per-question'));
+            const examId = examData.getAttribute('data-exam-id');
+            const studentId = examData.getAttribute('data-student-id');
+            const resultScore = parseInt(examData.getAttribute('data-result-score'));
+            const totalScore = questionCount * pointsPerQuestion;
+            
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('totalScore2').textContent = totalScore;
+            document.getElementById('questionCount').textContent = questionCount;
+            document.getElementById('pointsPerQuestion').textContent = pointsPerQuestion;
+
+            const correctAnswers = Math.floor(resultScore / pointsPerQuestion);
+            const wrongAnswers = questionCount - correctAnswers;
+            
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('wrongAnswers').textContent = wrongAnswers;
+
+            loadWrongAnswers(examId, studentId);
+        });
+
+        async function loadWrongAnswers(examId, studentId) {
+            try {
+                const response = await fetch(`/exams/api/wrong-answers/${examId}/${studentId}/`);
+                const data = await response.json();
+                
+                const wrongAnswersList = document.getElementById('wrongAnswersList');
+                
+                if (data.wrong_answers && data.wrong_answers.length > 0) {
+                    let html = '';
+                    
+                    data.wrong_answers.forEach((item, index) => {
+                        html += `
+                            <div class="wrong-question">
+                                <div class="question-number">سؤال ${index + 1}</div>
+                                <div class="question-text">${item.question_text}</div>
+                                
+                                ${item.question_image ? `
+                                    <img src="${item.question_image}" alt="صورة السؤال" style="max-width: 300px; margin: 10px 0;">
+                                ` : ''}
+                                
+                                <div class="answer-comparison">
+                                    <div class="student-answer">
+                                        <strong>إجابتك:</strong>
+                                        ${item.student_answer || 'لم يتم الإجابة'}
+                                    </div>
+                                    <div class="correct-answer">
+                                        <strong>الإجابة الصحيحة:</strong>
+                                        ${item.correct_answer}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    wrongAnswersList.innerHTML = html;
+                } else {
+                    wrongAnswersList.innerHTML = `
+                        <div class="no-wrong-answers">
+                            <h4>🎉 أحسنت!</h4>
+                            <p>لا توجد إجابات خاطئة - جميع إجاباتك صحيحة</p>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading wrong answers:', error);
+                document.getElementById('wrongAnswersList').innerHTML = `
+                    <div style="text-align: center; color: red; padding: 20px;">
+                        حدث خطأ في تحميل الإجابات الخاطئة
+                    </div>
+                `;
+            }
+        }
+
+        
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

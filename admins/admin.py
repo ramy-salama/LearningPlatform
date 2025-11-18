@@ -11,6 +11,7 @@ class AdminAdmin(admin.ModelAdmin):
     list_filter = ['permissions']
     search_fields = ['name', 'email']
     
+
     def admin_actions(self, obj):
         return format_html(
             '<div style="display: flex; gap: 5px;">'
@@ -20,6 +21,7 @@ class AdminAdmin(admin.ModelAdmin):
             '</div>'
         )
     admin_actions.short_description = 'الإجراءات السريعة'
+
 
 # تحديث admin.py للطلاب (بدون أيقونات المراسلة)
 from students.models import Student

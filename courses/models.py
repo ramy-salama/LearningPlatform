@@ -174,3 +174,6 @@ class Lesson(models.Model):
         if next_module:
             return Lesson.objects.filter(module=next_module).order_by('order').first()
         return None
+    
+
+    

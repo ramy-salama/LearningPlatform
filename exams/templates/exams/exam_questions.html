@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>إضافة أسئلة الاختبار - {{ exam.title }}</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
+        }
+
+        .dark-mode {
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 10px solid var(--primary-color);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 5px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
+        .turn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .turn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .exam-header {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .exam-header h1 {
+            margin: 0;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--hover-color);
+        }
+
+        .question-form {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .question-form h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--section);
+            color: var(--text-color);
+            border-right: 4px solid var(--primary-color);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        textarea:focus {
+            border: 2px solid var(--primary-color);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .choices-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .choice-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--section);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .choice-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .choice-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .choice-item input[type="text"] {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            min-height: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-color);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .questions-list {
+            margin-top: 30px;
+        }
+
+        .questions-list h3 {
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .question-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .choices-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .choice-display {
+            padding: 12px;
+            border-radius: 5px;
+            background: var(--section);
+            border: 1px solid var(--border-color);
+        }
+
+        .correct-choice {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .question-image {
+            max-width: 300px;
+            max-height: 200px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .messages {
+            margin: 20px 0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-right: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #dc3545;
+        }
+
+        .note-box {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-right: 4px solid #ffc107;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-controls">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">إضافة أسئلة الاختبار</span>
+        </div>
+        <div class="header-icons">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <a class="turn" href="{% url 'teachers:teacher_dashboard' %}">↶ العودة للوحة التحكم</a>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="exam-header">
+            <h1>{{ exam.title }}</h1>
+            <div class="nav-buttons">
+                <a href="{% url 'exams:exam_management' %}" class="nav-btn">العودة للإدارة</a>
+            </div>
+        </div>
+
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="note-box">
+            <strong>ملاحظة:</strong> يجب إضافة <strong>10 أسئلة على الأقل</strong> قبل أن يصبح الاختبار نشطاً.
+        </div>
+
+        <!-- نموذج إضافة سؤال جديد -->
+        <div class="question-form">
+            <h3>إضافة سؤال جديد</h3>
+            <form id="addQuestionForm" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="question_text">نص السؤال *</label>
+                    <textarea id="question_text" name="question_text" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="question_image">صورة السؤال (اختياري)</label>
+                    <input type="file" id="question_image" name="question_image" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label>الاختيارات * (يجب تحديد إجابة صحيحة واحدة)</label>
+                    <div class="choices-container" id="choicesContainer">
+                        <div class="choice-item">
+                            <input type="radio" name="correct_choice" value="0" class="correct-radio" checked>
+                            <input type="text" name="choice_0" placeholder="النص الاختيار 1" required>
+                        </div>
+                        <div class="choice-item">
+                            <input type="radio" name="correct_choice" value="1" class="correct-radio">
+                            <input type="text" name="choice_1" placeholder="النص الاختيار 2" required>
+                        </div>
+                        <div class="choice-item">
+                            <input type="radio" name="correct_choice" value="2" class="correct-radio">
+                            <input type="text" name="choice_2" placeholder="النص الاختيار 3" required>
+                        </div>
+                        <div class="choice-item">
+                            <input type="radio" name="correct_choice" value="3" class="correct-radio">
+                            <input type="text" name="choice_3" placeholder="النص الاختيار 4" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">إضافة السؤال</button>
+            </form>
+        </div>
+
+        <!-- قائمة الأسئلة المضافة -->
+        <div class="questions-list">
+            <h3>الأسئلة المضافة ({{ questions.count }})</h3>
+
+            {% if questions %}
+            {% for question in questions %}
+            <div class="question-item">
+                <div class="question-header">
+                    <strong>سؤال {{ forloop.counter }}</strong>
+                    <button class="btn btn-danger" data-question-id="{{ question.id }}"
+                        onclick="deleteQuestion(this)">حذف السؤال</button>
+                </div>
+
+                <div class="question-text">{{ question.text }}</div>
+
+                {% if question.image %}
+                <div>
+                    <img src="{{ question.image.url }}" alt="صورة السؤال" class="question-image">
+                </div>
+                {% endif %}
+
+                <div class="choices-list">
+                    {% for choice in question.choice_set.all %}
+                    <div class="choice-display {% if choice.is_correct %}correct-choice{% endif %}">
+                        {{ choice.text }}
+                        {% if choice.is_correct %} ✓ {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div style="text-align: center; padding: 40px; color: var(--text-color); font-style: italic;">
+                لا توجد أسئلة مضافة بعد
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // إضافة سؤال باستخدام AJAX
+        document.getElementById('addQuestionForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('question_text', document.getElementById('question_text').value);
+
+            // إضافة صورة السؤال إذا وجدت
+            const imageInput = document.getElementById('question_image');
+            if (imageInput.files[0]) {
+                formData.append('question_image', imageInput.files[0]);
+            }
+
+            // جمع الاختيارات
+            const choices = [];
+            for (let i = 0; i < 4; i++) {
+                const choiceInput = document.querySelector(`input[name="choice_${i}"]`);
+                if (choiceInput.value.trim()) {
+                    choices.push(choiceInput.value.trim());
+                }
+            }
+
+            // الحصول على الإجابة الصحيحة
+            const correctChoice = document.querySelector('input[name="correct_choice"]:checked').value;
+
+            // التحقق من البيانات
+            if (choices.length !== 4) {
+                alert('يجب ملء جميع الاختيارات الأربعة');
+                return;
+            }
+
+            // إضافة البيانات إلى formData
+            formData.append('choices', JSON.stringify(choices));
+            formData.append('correct_choice_index', correctChoice);
+
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('خطأ: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    alert('حدث خطأ في الإرسال');
+                });
+        });
+
+        // حذف سؤال
+        function deleteQuestion(button) {
+            const questionId = button.getAttribute('data-question-id');
+
+            if (!confirm('هل أنت متأكد من حذف هذا السؤال؟')) return;
+
+            fetch(`/exams/question/${questionId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        button.closest('.question-item').remove();
+                    } else {
+                        alert('خطأ: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    alert('حدث خطأ في الاتصال');
+                });
+        }
+
+        function toggleTheme() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (isDarkMode) {
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+
+</html>

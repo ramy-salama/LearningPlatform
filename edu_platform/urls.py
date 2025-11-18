@@ -15,6 +15,7 @@ urlpatterns = [
     path('reports/', include('reports.urls')),
     path('messaging/', include('messaging.urls')),
     path('admins/', include('admins.urls')),
+    path('exams/', include('exams.urls')),
 ]
 
 if settings.DEBUG:

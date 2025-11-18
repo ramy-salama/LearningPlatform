@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>إنشاء اختبار جديد</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --border-color: #ecf0f1;
+            --primary-color: #ffab25;
+            --hover-color: #4a90e2;
+            --section: #fdf3ea;
+            --shadow: #d8dada;
+        }
+
+        .dark-mode {
+            --bg-color: #080c14;
+            --card-bg: #1e2a3a;
+            --text-color: #ffffff;
+            --header-bg: #1e2a3a;
+            --border-color: #404040;
+            --primary-color: #357abd;
+            --hover-color: #ffab25;
+            --section: #222b3d;
+            --shadow: #28505d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 10px solid var(--primary-color);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .home-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 5px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+            rotate: -45deg;
+        }
+
+        .turn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .turn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--section);
+            color: var(--text-color);
+            border-right: 4px solid var(--primary-color);
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border: 2px solid var(--primary-color);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: var(--hover-color);
+        }
+
+        .messages {
+            margin: 10px 0;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-controls">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text"> إنشاء اختبار جديد</span>
+        </div>
+        <div class="header-icons">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <a class="turn" href="{% url 'teachers:teacher_dashboard' %}"> ↶ العودة للوحة التحكم</a>
+        </div>
+    </div>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="course">اختر الكورس:</label>
+                <select name="course" id="course" required>
+                    <option value="">-- اختر الكورس --</option>
+                    {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="title">عنوان الاختبار:</label>
+                <input type="text" name="title" id="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="instructions">إرشادات الاختبار:</label>
+                <textarea name="instructions" id="instructions" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">مدة الاختبار (30-180 دقيقة):</label>
+                <input type="number" name="duration" id="duration" min="30" max="180" required>
+            </div>
+
+            <div class="form-group">
+                <label for="points_per_question">درجة كل سؤال:</label>
+                <input type="number" name="points_per_question" id="points_per_question" min="1" value="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="start_date">تاريخ ووقت الظهور:</label>
+                <input type="datetime-local" name="start_date" id="start_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_date">تاريخ ووقت الانتهاء:</label>
+                <input type="datetime-local" name="end_date" id="end_date" required>
+            </div>
+
+            <button type="submit">إنشاء الاختبار وإضافة الأسئلة</button>
+        </form>
+    </div>
+</body>
+<script>
+    function toggleTheme() {
+        const themeToggle = document.querySelector('.theme-toggle');
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+
+        if (isDarkMode) {
+            themeToggle.textContent = '☀️';
+        } else {
+            themeToggle.textContent = '🌙';
+        }
+
+        localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    // تحميل الوضع المحفوظ
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        const themeToggle = document.querySelector('.theme-toggle');
+
+        if (savedDarkMode) {
+            document.body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        } else {
+            themeToggle.textContent = '🌙';
+        }
+    });
+</script>
+
+</html>

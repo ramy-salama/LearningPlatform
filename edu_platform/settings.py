@@ -15,8 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    
+    'django.contrib.staticfiles',    
     # التطبيقات المخصصة
     'students.apps.StudentsConfig',
     'teachers.apps.TeachersConfig', 
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     'reports.apps.ReportsConfig',
     'messaging.apps.MessagingConfig',
     'admins.apps.AdminsConfig',
+    'exams.apps.ExamsConfig', 
 ]
 
 MIDDLEWARE = [

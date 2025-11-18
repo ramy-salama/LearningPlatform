@@ -348,6 +348,11 @@
         font-weight: 600;
     }
 
+    .enhanced-notification-item.unread {
+        background-color: var(--primary-color);
+        border-right: 3px solid var(--hover-color);
+    }
+
     /* ===== حالات خاصة ===== */
     .enhanced-loading {
         text-align: center;
@@ -394,10 +399,8 @@
         opacity: 0.6;
         margin-top: 5px;
     }
-    .enhanced-notification-item.unread {
-    background-color: #f0f8ff;
-    border-right: 3px solid #007bff;
-}
+
+    
 
     /* ===== الظل الخلفي للنوافذ ===== */
     .modal-overlay {
@@ -418,30 +421,30 @@
             max-height: 90vh;
             border-radius: 12px;
         }
-        
+
         .enhanced-modal-header {
             padding: 20px;
         }
-        
+
         .enhanced-modal-header h3 {
             font-size: 18px;
         }
-        
+
         .enhanced-notification-item {
             padding: 15px 20px;
             gap: 12px;
         }
-        
+
         .enhanced-notification-icon {
             width: 40px;
             height: 40px;
             font-size: 18px;
         }
-        
+
         .enhanced-notification-title {
             font-size: 15px;
         }
-        
+
         .enhanced-notification-preview {
             font-size: 13px;
         }
@@ -452,16 +455,16 @@
             height: 95vh;
             max-height: 95vh;
         }
-        
+
         .enhanced-modal-header {
             padding: 15px;
         }
-        
+
         .enhanced-notification-item {
             padding: 12px 15px;
             gap: 10px;
         }
-        
+
         .enhanced-notification-meta {
             flex-direction: column;
             align-items: flex-start;
@@ -583,7 +586,7 @@
         }, 300);
 
         ensureDarkModeButton();
-        
+
         // تحديث عداد الإشعارات
         loadEnhancedNotificationCount();
     });
@@ -647,19 +650,19 @@
     }
 
 
-function loadEnhancedNotifications() {
-    const notificationsList = document.getElementById('enhancedNotificationsList');
-    if (!notificationsList) return;
+    function loadEnhancedNotifications() {
+        const notificationsList = document.getElementById('enhancedNotificationsList');
+        if (!notificationsList) return;
 
-    fetch('/admins/get_admin_notifications/')
-        .then(response => response.json())
-        .then(data => {
-            if (data.notifications && data.notifications.length > 0) {
-                let notificationsHTML = '';
-                data.notifications.forEach(notification => {
-                    const isUnread = !notification.is_read;
-                    
-                    notificationsHTML += `
+        fetch('/admins/get_admin_notifications/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.notifications && data.notifications.length > 0) {
+                    let notificationsHTML = '';
+                    data.notifications.forEach(notification => {
+                        const isUnread = !notification.is_read;
+
+                        notificationsHTML += `
                         <div class="enhanced-notification-item ${isUnread ? 'unread' : ''}" 
                              onclick="toggleMessage(this, ${notification.message_id})">
                             <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
@@ -673,48 +676,48 @@ function loadEnhancedNotifications() {
                             </div>
                         </div>
                     `;
-                });
-                notificationsList.innerHTML = notificationsHTML;
-            } else {
-                notificationsList.innerHTML = `
+                    });
+                    notificationsList.innerHTML = notificationsHTML;
+                } else {
+                    notificationsList.innerHTML = `
                     <div class="enhanced-empty-state">
                         <div class="icon">📭</div>
                         <p>لا توجد رسائل واردة</p>
                         <div class="subtext">سيظهر هنا أي رسائل من الطلاب</div>
                     </div>
                 `;
-            }
-        })
-        .catch(error => {
-            console.error('Error loading notifications:', error);
-            notificationsList.innerHTML = `
+                }
+            })
+            .catch(error => {
+                console.error('Error loading notifications:', error);
+                notificationsList.innerHTML = `
                 <div class="enhanced-empty-state">
                     <div class="icon">⚠️</div>
                     <p>حدث خطأ في تحميل الرسائل</p>
                     <div class="subtext">يرجى المحاولة مرة أخرى</div>
                 </div>
             `;
-        });
-}
-
-// دالة تغيير حالة الرسالة
-function toggleMessage(element, messageId) {
-    // غير اللون في الواجهة
-    element.classList.remove('unread');
-    
-    // غير البادج من "جديد" لـ "مقروء"
-    const badge = element.querySelector('.enhanced-notification-badge');
-    if (badge) {
-        badge.textContent = 'مقروء';
+            });
     }
-    
-    // حدد الرسالة كمقروءة في الداتابيز
-    fetch(`/admins/mark-message-read/${messageId}/`)
-    .then(response => response.json())
-    .then(data => {
-        console.log('تم تحديد الرسالة كمقروءة');
-    });
-}
+
+    // دالة تغيير حالة الرسالة
+    function toggleMessage(element, messageId) {
+        // غير اللون في الواجهة
+        element.classList.remove('unread');
+
+        // غير البادج من "جديد" لـ "مقروء"
+        const badge = element.querySelector('.enhanced-notification-badge');
+        if (badge) {
+            badge.textContent = 'مقروء';
+        }
+
+        // حدد الرسالة كمقروءة في الداتابيز
+        fetch(`/admins/mark-message-read/${messageId}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('تم تحديد الرسالة كمقروءة');
+            });
+    }
 
     function loadEnhancedNotificationCount() {
         // استخدام المسار الحالي لجلب الرسائل ثم حساب غير المقروءة
@@ -746,7 +749,7 @@ function toggleMessage(element, messageId) {
             });
     }
 
-    
+
     // ===== تحديث العداد كل 30 ثانية =====
     setInterval(loadEnhancedNotificationCount, 30000);
 
