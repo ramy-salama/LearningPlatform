@@ -77,4 +77,25 @@ class Result(models.Model):
         unique_together = ['exam', 'student']
 
 
-        
+class Result(models.Model):
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    percentage = models.FloatField(default=0)
+    completed_at = models.DateTimeField(auto_now_add=True)
+    answers = models.JSONField(default=dict)
+    started_at = models.DateTimeField(auto_now_add=True)  # الجديد
+    duration_minutes = models.IntegerField(default=0)     # الجديد
+
+    def save(self, *args, **kwargs):
+        # حساب المدة تلقائياً
+        if self.started_at and self.completed_at:
+            duration = self.completed_at - self.started_at
+            self.duration_minutes = int(duration.total_seconds() / 60)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.student.name} - {self.exam.title}"
+
+    class Meta:
+        unique_together = ['exam', 'student']      

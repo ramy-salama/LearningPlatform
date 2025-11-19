@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطأ في النظام</title>
+    <style>
+        :root {
+        --bg-color: #f8f9fa;
+        --card-bg: white;
+        --text-color: #333;
+        --header-bg: #2c3e50;
+        --border-color: #ecf0f1;
+        --primary-color: #ffab25;
+        --hover-color: #4a90e2;
+        --section: #fdf3ea;
+        --shadow: #d8dada;
+      }
+
+      .dark-mode {
+        --bg-color: #080c14;
+        --card-bg: #1e2a3a;
+        --text-color: #ffffff;
+        --header-bg: #1e2a3a;
+        --border-color: #404040;
+        --primary-color: #357abd;
+        --hover-color: #ffab25;
+        --section: #222b3d;
+        --shadow: #28505d;
+      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow);
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .error-code {
+            color: #e74c3c;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: var(--hover-color);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--hover-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .support-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #63696aff;
+            font-size: 14px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 30px 20px;
+            }
+            
+            .logo {
+                font-size: 60px;
+            }
+            
+            .error-code {
+                font-size: 36px;
+            }
+            
+            .error-title {
+                font-size: 24px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="logo">🚧</div>
+        <div class="error-code">500</div>
+        <h1 class="error-title">عذراً، حدث خطأ في النظام</h1>
+        <p class="error-message">
+            نواجه بعض الصعوبات التقنية في الوقت الحالي. 
+            فريق الدعم الفني يعمل على حل المشكلة. 
+            يرجى المحاولة مرة أخرى بعد قليل.
+        </p>
+        
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">العودة للرئيسية</a>
+            <a href="javascript:location.reload()" class="btn btn-secondary">إعادة تحميل</a>
+        </div>
+        
+        <div class="support-info">
+            <p>للحصول على مساعدة فورية، يرجى الاتصال بالدعم الفني</p>
+            <p class="pulse">📞 01002150057 </p>
+        </div>
+    </div>
+</body>
+</html>

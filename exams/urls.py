@@ -13,5 +13,6 @@ urlpatterns = [
     path('<int:exam_id>/submit/', views.submit_exam, name='submit_exam'),
     path('<int:exam_id>/result/', views.exam_result, name='exam_result'),
     path('api/wrong-answers/<int:exam_id>/<int:student_id>/', views.wrong_answers_api, name='wrong_answers_api'),
+    path('<int:exam_id>/results/', views.exam_results_stats, name='exam_results_stats'),
     
 ]

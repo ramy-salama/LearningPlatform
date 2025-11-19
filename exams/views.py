@@ -11,6 +11,8 @@ from django.utils import timezone
 from students.models import Student
 from enrollments.models import Enrollment
 from django.http import JsonResponse
+from django.db.models import Avg, Count
+from django.template.defaulttags import register
 
 @teacher_required
 def create_exam(request):
@@ -202,6 +204,8 @@ def student_exams(request):
         'active_exams': active_exams
     })
 
+
+
 def take_exam(request, exam_id):
     """صفحة أداء الاختبار"""
     # التحقق من تسجيل الدخول
@@ -238,6 +242,9 @@ def take_exam(request, exam_id):
     # جلب الأسئلة مرتبة
     questions = Question.objects.filter(exam=exam).order_by('order').prefetch_related('choice_set')
     
+    # ✅ حفظ وقت بدء الاختبار
+    request.session['exam_start_time'] = str(timezone.now())
+    
     return render(request, 'exams/take_exam.html', {
         'exam': exam,
         'questions': questions,
@@ -246,7 +253,6 @@ def take_exam(request, exam_id):
     })
 
 def submit_exam(request, exam_id):
-    """معالجة إجابات الاختبار"""
     if not request.session.get('student_id'):
         return redirect('students:student_login')
     
@@ -284,14 +290,27 @@ def submit_exam(request, exam_id):
         total_points = total_questions * exam.points_per_question
         percentage = (score / total_points) * 100 if total_points > 0 else 0
         
-        # حفظ النتيجة
+        # ✅ جلب وقت البداية من session
+        start_time_str = request.session.get('exam_start_time')
+        if start_time_str:
+            started_at = timezone.datetime.fromisoformat(start_time_str)
+        else:
+            started_at = timezone.now()
+        
+        # ✅ حفظ النتيجة مع الوقت
         Result.objects.create(
             exam=exam,
             student=student,
             score=score,
             percentage=percentage,
-            answers=answers
+            answers=answers,
+            started_at=started_at,
+            completed_at=timezone.now()
         )
+        
+        # ✅ مسح وقت البدء من session
+        if 'exam_start_time' in request.session:
+            del request.session['exam_start_time']
         
         return redirect('exams:exam_result', exam_id=exam.id)
     
@@ -363,3 +382,53 @@ def check_course_has_active_exams(course_id):
     ).exists()
     return has_active_exams
 
+
+
+@register.filter
+def get_question_text(question_id):
+    try:
+        return Question.objects.get(id=question_id).text
+    except Question.DoesNotExist:
+        return "سؤال محذوف"
+
+@teacher_required
+def exam_results_stats(request, exam_id):
+    teacher_id = request.session.get('teacher_id')
+    teacher = Teacher.objects.get(id=teacher_id)
+    
+    exam = get_object_or_404(Exam, id=exam_id, teacher=teacher)
+    results = Result.objects.filter(exam=exam).select_related('student')
+    
+    # الإحصائيات
+    total_students = results.count()
+    avg_percentage = results.aggregate(avg=Avg('percentage'))['avg'] or 0
+    passed_students = results.filter(percentage__gte=50).count()
+    failed_students = total_students - passed_students
+    
+    # الأسئلة الأكثر خطأ
+    wrong_questions = {}
+    for result in results:
+        for q_id, choice_id in result.answers.items():
+            question = Question.objects.get(id=int(q_id))
+            choice = Choice.objects.get(id=choice_id)
+            if not choice.is_correct:
+                wrong_questions[question.id] = wrong_questions.get(question.id, 0) + 1
+    
+    # تحضير البيانات للتمبلت
+    top_wrong_questions = []
+    for question_id, wrong_count in sorted(wrong_questions.items(), key=lambda x: x[1], reverse=True)[:5]:
+        question = Question.objects.get(id=question_id)
+        top_wrong_questions.append({
+            'question_text': question.text,
+            'wrong_count': wrong_count
+        })
+    
+    return render(request, 'exams/exam_results_stats.html', {
+        'exam': exam,
+        'results': results,
+        'total_students': total_students,
+        'avg_percentage': round(avg_percentage, 1),
+        'passed_students': passed_students,
+        'failed_students': failed_students,
+        'top_wrong_questions': top_wrong_questions,
+    })

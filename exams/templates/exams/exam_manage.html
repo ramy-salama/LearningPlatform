@@ -13,7 +13,7 @@
             --border-color: #ecf0f1;
             --primary-color: #ffab25;
             --hover-color: #4a90e2;
-            --section: #fdf3ea;
+            --section: #f9f6f4ff;
             --shadow: #d8dada;
         }
 
@@ -183,6 +183,7 @@
             margin-top: 20px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -281,7 +282,10 @@
 
                 <div class="actions">
                     <a href="{% url 'exams:exam_questions' exam.id %}" class="action-btn">
-                        إدارة الأسئلة
+                        ✏️ إدارة الأسئلة
+                    </a>
+                    <a href="{% url 'exams:exam_results_stats' exam.id %}" class="action-btn">
+                        📊 إحصائيات النتائج
                     </a>
                 </div>
             </div>

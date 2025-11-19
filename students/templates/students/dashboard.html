@@ -686,7 +686,6 @@
                 <h2>محفظتي الإلكترونية</h2>
                 <p class="balance">رصيدك: {{ student.balance }} جنيه</p>
                 <p>إجمالي المنصرف: {{ student.total_spent }} جنيه</p>
-
                 <a href="/students/wallet/topup/" class="btn">شحن الرصيد</a>
                 <a href="/courses/" class="btn">تصفح الكورسات</a>
             </div>
@@ -719,35 +718,27 @@
 
                     <p><strong>التقدم:</strong> {{ enrollment.progress|default:0 }}%</p>
                     <div class="progress-container">
-                      <div class="progress-bar" style="width: {{ enrollment.progress|default:0 }}%"></div>
-                    </div>
+                    <div class="progress-bar" style="width: {{ enrollment.progress|default:0 }}%"></div>
+                </div>
                     <p><strong>الدروس المكتملة:</strong> {{ enrollment.completed_lessons|length|default:0 }}/{{ enrollment.get_total_lessons|default:0 }}</p>
 
 
-                    <div class="exam-result" data-course-id="{{ enrollment.course.id }}">
-                        {% for exam in enrollment.course.exam_set.all %}
-                        {% with results=exam.result_set.all %}
-                        {% if results %}
-                        <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">{{ exam.title }}</span></p>
-                        <p><strong>✅ النتيجة:</strong> <span class="exam-score">{{ results.0.percentage|floatformat:1
-                                }}</span>%</p>
-
-                        <script>
-                            // حفظ البيانات في localStorage
-                            localStorage.setItem('exam_result_{{ enrollment.course.id }}',
-                                JSON.stringify({
-                                    title: '{{ exam.title }}',
-                                    score: '{{ results.0.percentage|floatformat:1 }}'
-                                })
-                            );
-                        </script>
-                        {% endif %}
-                        {% endwith %}
-                        {% empty %}
-                        <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">لا توجد اختبارات</span></p>
-                        <p><strong>✅ النتيجة:</strong> <span class="exam-score">--</span>%</p>
-                        {% endfor %}
-                    </div>
+                <div class="exam-result" data-course-id="{{ enrollment.course.id }}">
+                    {% for exam in enrollment.course.exam_set.all %}
+                    {% for result in exam.result_set.all %}
+                    {% if result.student.id == student.id %}
+                    <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">{{ exam.title }}</span></p>
+                    <p><strong>✅ النتيجة:</strong> <span class="exam-score">{{ result.percentage|floatformat:1 }}</span>%</p>
+                    {% endif %}
+                    {% empty %}
+                    <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">{{ exam.title }}</span></p>
+                    <p><strong>✅ النتيجة:</strong> <span class="exam-score">--</span>%</p>
+                    {% endfor %}
+                    {% empty %}
+                    <p><strong>📊 آخر اختبار:</strong> <span class="exam-title">لا توجد اختبارات</span></p>
+                    <p><strong>✅ النتيجة:</strong> <span class="exam-score">--</span>%</p>
+                    {% endfor %}
+                </div>
 
                     <a href="/courses/{{ enrollment.course.id }}/" class="btn">عرض الكورس</a>
                     {% if enrollment.status == 'active' %}
@@ -789,6 +780,13 @@
     </footer>
 
     <script>
+        localStorage.setItem('exam_result_{{ enrollment.course.id }}',
+                        JSON.stringify({
+                            title: '{{ exam.title }}',
+                            score: '{{ result.percentage|floatformat:1 }}'
+                        })
+                    );
+
         function toggleTheme() {
             const themeToggle = document.querySelector('.theme-toggle');
             document.body.classList.toggle('dark-mode');
