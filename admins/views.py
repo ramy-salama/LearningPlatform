@@ -106,7 +106,8 @@ def get_admin_notifications(request):
             notifications.append(
                 {
                     "icon": "✉️",
-                    "title": f"{student_info}",
+                    "title": msg.title,  # ⬅️ عنوان الرسالة اللي كتبها الطالب
+                    "student_info": f"{student_info}",  # ⬅️ معلومات الطالب في حقل جديد
                     "preview": msg.content[:150],
                     "time": format_message_time(msg.created_at),
                     "is_read": msg.is_read,  # نرسل الحالة الفعلية

@@ -663,18 +663,19 @@
 
                         notificationsHTML += `
                         <div class="enhanced-notification-item ${isUnread ? 'unread' : ''}" 
-                             onclick="toggleMessage(this, ${notification.message_id})">
-                            <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
-                            <div class="enhanced-notification-content">
-                                <div class="enhanced-notification-title">${notification.title}</div>
-                                <div class="enhanced-notification-preview">${notification.preview}</div>
-                                <div class="enhanced-notification-meta">
-                                    <div class="enhanced-notification-time">${notification.time}</div>
-                                    <div class="enhanced-notification-badge">${isUnread ? 'جديد' : 'مقروء'}</div>
-                                </div>
-                            </div>
+                        onclick="toggleMessage(this, ${notification.message_id})">
+                        <div class="enhanced-notification-icon">${notification.icon || '📨'}</div>
+                        <div class="enhanced-notification-content">
+                        <div class="enhanced-notification-student">${notification.student_info}</div>  <!-- ⬅️ أضف هذا السطر -->
+                        <div class="enhanced-notification-title">${notification.title}</div>
+                        <div class="enhanced-notification-preview">${notification.preview}</div>
+                        <div class="enhanced-notification-meta">
+                        <div class="enhanced-notification-time">${notification.time}</div>
+                        <div class="enhanced-notification-badge">${isUnread ? 'جديد' : 'مقروء'}</div>
                         </div>
-                    `;
+                        </div>
+                        </div>
+                        `;
                     });
                     notificationsList.innerHTML = notificationsHTML;
                 } else {
@@ -717,37 +718,37 @@
                 console.log('تم تحديد الرسالة كمقروءة');
             });
     }
-
-    function loadEnhancedNotificationCount() {
-        // استخدام المسار الحالي لجلب الرسائل ثم حساب غير المقروءة
-        fetch('/admins/get_admin_messages/')
-            .then(response => response.json())
-            .then(data => {
-                const badge = document.getElementById('adminNotificationBadge');
-                if (badge) {
-                    if (data.messages && data.messages.length > 0) {
-                        // حساب الرسائل غير المقروءة
-                        const unreadCount = data.messages.filter(msg => !msg.is_read).length;
-                        if (unreadCount > 0) {
-                            badge.textContent = unreadCount;
-                            badge.style.display = 'flex';
-                        } else {
-                            badge.style.display = 'none';
-                        }
+function loadEnhancedNotificationCount() {
+    fetch('/admins/get_admin_notifications/')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('adminNotificationBadge');
+            if (badge) {
+                if (data.notifications && data.notifications.length > 0) {
+                    // حساب الرسائل غير المقروءة من الـ notifications
+                    const unreadCount = data.notifications.filter(notification => 
+                        !notification.is_read
+                    ).length;
+                    
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = 'flex';
                     } else {
                         badge.style.display = 'none';
                     }
-                }
-            })
-            .catch(error => {
-                console.error('Error loading notification count:', error);
-                const badge = document.getElementById('adminNotificationBadge');
-                if (badge) {
+                } else {
                     badge.style.display = 'none';
                 }
-            });
-    }
-
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notification count:', error);
+            const badge = document.getElementById('adminNotificationBadge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+        });
+}
 
     // ===== تحديث العداد كل 30 ثانية =====
     setInterval(loadEnhancedNotificationCount, 30000);
