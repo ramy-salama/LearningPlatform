@@ -58,5 +58,22 @@ class Student(models.Model):
         verbose_name = 'طالب'
         verbose_name_plural = 'الطلاب'
 
-
-        
+class WalletSettings(models.Model):
+    instapay_number = models.CharField(max_length=20, default='01090801009')
+    vodafone_number = models.CharField(max_length=20, default='01002150057')
+    etisalat_number = models.CharField(max_length=20, default='01000000000') 
+    orange_number = models.CharField(max_length=20, default='01111111111')
+    whatsapp_number = models.CharField(max_length=20, default='01002150057')
+    
+    # تعليمات الشحن الأربعة
+    step1_text = models.TextField(default='قم بتحويل مبلغ الشحن إلى أحد أرقام المحافظ الموجودة بالاعلى')
+    step2_text = models.TextField(default='احفظ إيصال الدفع أو التقط صورة له')
+    step3_text = models.TextField(default='إضغط على الزر بالاسفل لأرسال الإيصال عبر الواتساب')
+    step4_text = models.TextField(default='سيتم شحن رصيدك خلال ٢٤ ساعة عمل')
+    
+    class Meta:
+        verbose_name = "إعدادات المحافظ"
+        verbose_name_plural = "إعدادات المحافظ"
+    
+    def __str__(self):
+        return "إعدادات محافظ الشحن"

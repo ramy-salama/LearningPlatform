@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-nc&h!j^t!r!r^h)5g!n&k!n!r!n!r!n!r!n!r!n!r!n!r!n'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'messaging.apps.MessagingConfig',
     'admins.apps.AdminsConfig',
     'exams.apps.ExamsConfig', 
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

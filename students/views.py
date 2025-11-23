@@ -15,6 +15,7 @@ from courses.models import Course
 from decimal import Decimal, InvalidOperation
 from admins.models import Admin  # ✅ استيراد نموذج Admin
 from django.http import HttpResponse
+from .models import Student, WalletSettings
 
 # ===============================
 # دوال الطالب الأساسية (محفوظة بالكامل مع تحسينات الأداء)
@@ -141,13 +142,14 @@ def student_dashboard(request):
             'error': f'حدث خطأ في تحميل البيانات: {str(e)}'
         })
 
-
 def wallet_topup(request):
     if 'student_id' not in request.session:
         return redirect('students:student_login')
 
     try:
         student = Student.objects.get(id=request.session['student_id'])
+        # ✅ إضافة هذا السطر علشان نجيب إعدادات المحافظ
+        wallet_settings = WalletSettings.objects.first()
 
         if request.method == 'POST':
             amount = request.POST.get('amount')
@@ -155,6 +157,7 @@ def wallet_topup(request):
             if not amount:
                 return render(request, 'students/wallet_topup.html', {
                     'student': student,
+                    'wallet_settings': wallet_settings,  # ✅ إضافة
                     'error': 'يرجى إدخال المبلغ'
                 })
 
@@ -163,6 +166,7 @@ def wallet_topup(request):
                 if amount_decimal <= 0:
                     return render(request, 'students/wallet_topup.html', {
                         'student': student,
+                        'wallet_settings': wallet_settings,  # ✅ إضافة
                         'error': 'المبلغ يجب أن يكون أكبر من الصفر'
                     })
 
@@ -173,15 +177,21 @@ def wallet_topup(request):
             except InvalidOperation:
                 return render(request, 'students/wallet_topup.html', {
                     'student': student,
+                    'wallet_settings': wallet_settings,  # ✅ إضافة
                     'error': 'المبلغ غير صحيح'
                 })
             except Exception as e:
                 return render(request, 'students/wallet_topup.html', {
                     'student': student,
+                    'wallet_settings': wallet_settings,  # ✅ إضافة
                     'error': f'حدث خطأ أثناء شحن الرصيد: {str(e)}'
                 })
 
-        return render(request, 'students/wallet_topup.html', {'student': student})
+        # ✅ إضافة wallet_settings هنا أيضاً
+        return render(request, 'students/wallet_topup.html', {
+            'student': student,
+            'wallet_settings': wallet_settings
+        })
 
     except Student.DoesNotExist:
         request.session.flush()
