@@ -14,7 +14,7 @@ def home(request):
             <h3>{course.title}</h3>
             <p>المعلم: {course.teacher}</p>
             <p>عدد الطلاب: {course.students_count}</p>
-            <p>السعر: {course.price} ريال</p>
+            <p>السعر: {course.price} جنيه</p>
             <p>التقييم: {course.average_rating} ⭐</p>
         </div>
         """
@@ -28,7 +28,7 @@ def home(request):
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>منصة التعليم الذكي</title>
+        <title> درس أونلاين </title>
         <style>
             body {{
                 font-family: Arial, sans-serif;
