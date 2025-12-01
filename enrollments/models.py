@@ -70,3 +70,22 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.course.title}"
+class TopUpRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'قيد الانتظار'),
+        ('approved', 'تمت الموافقة'),
+        ('rejected', 'مرفوض'),
+    ]
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name="الطالب")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="المبلغ المطلوب شحنه")
+    request_date = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الطلب")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="حالة الطلب")
+    proof_of_payment = models.CharField(max_length=255, blank=True, verbose_name="رابط إثبات الدفع (WhatsApp)")
+    
+    class Meta:
+        verbose_name = 'طلب شحن رصيد'
+        verbose_name_plural = 'طلبات شحن الرصيد'
+
+    def __str__(self):
+        return f"طلب شحن لـ {self.student.name} بمبلغ {self.amount}"

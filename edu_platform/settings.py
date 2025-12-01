@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-nc&h!j^t!r!r^h)5g!n&k!n!r!n!r!n!r!n!r!n!r!n!r!n'
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-nc&h!j^t!r!r^h)5g!n&k!n!r!n!r!n!r!n!r!n!r!n') # ✅ يجب تغيير القيمة الافتراضية في الإنتاج!r!n'
 
 DEBUG = True
 
@@ -63,11 +63,11 @@ WSGI_APPLICATION = 'edu_platform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'edu_platform',
-        'USER': 'root', 
-        'PASSWORD': '123456',  # كلمة المرور الفعلية لـ MySQL على جهازك
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', 'edu_platform'),
+        'USER': os.environ.get('DB_USER', 'root'), 
+        'PASSWORD': os.environ.get('DB_PASSWORD', '123456'),  # ✅ يجب تغيير القيمة الافتراضية في الإنتاج
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'use_unicode': True,

@@ -68,21 +68,6 @@ class Result(models.Model):
     score = models.IntegerField(default=0)
     percentage = models.FloatField(default=0)
     completed_at = models.DateTimeField(auto_now_add=True)
-    answers = models.JSONField(default=dict)  # للمعلم فقط
-
-    def __str__(self):
-        return f"{self.student.name} - {self.exam.title}"
-
-    class Meta:
-        unique_together = ['exam', 'student']
-
-
-class Result(models.Model):
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)
-    percentage = models.FloatField(default=0)
-    completed_at = models.DateTimeField(auto_now_add=True)
     answers = models.JSONField(default=dict)
     started_at = models.DateTimeField(auto_now_add=True)  # الجديد
     duration_minutes = models.IntegerField(default=0)     # الجديد

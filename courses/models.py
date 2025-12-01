@@ -2,9 +2,9 @@ from django.db import models
 from teachers.models import Teacher
 from students.models import Student
 from django.conf import settings
-import requests
 from cryptography.fernet import Fernet
 import base64
+import os # ✅ إضافة os للاستخدام في التشفيرse64
 
 class Course(models.Model):
     TEACHER_PERCENTAGE_CHOICES = [
@@ -104,7 +104,8 @@ class Lesson(models.Model):
         """تشفير Video ID"""
         try:
             # ⬇️ تأكد من أن المفتاح صالح
-            fernet = Fernet(settings.ENCRYPTION_KEY)
+            ENCRYPTION_KEY = os.environ.get('FERNET_KEY', 'A_VERY_INSECURE_DEFAULT_KEY_FOR_DEMO_ONLY') # ✅ يجب تغيير القيمة الافتراضية في الإنتاج
+            fernet = Fernet(ENCRYPTION_KEY)
             encrypted = fernet.encrypt(video_id.encode())
             return base64.urlsafe_b64encode(encrypted).decode()
         except Exception as e:
@@ -174,6 +175,4 @@ class Lesson(models.Model):
         if next_module:
             return Lesson.objects.filter(module=next_module).order_by('order').first()
         return None
-    
-
     

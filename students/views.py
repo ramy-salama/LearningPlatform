@@ -142,55 +142,29 @@ def student_dashboard(request):
             'error': f'حدث خطأ في تحميل البيانات: {str(e)}'
         })
 
+
 def wallet_topup(request):
     if 'student_id' not in request.session:
         return redirect('students:student_login')
 
     try:
         student = Student.objects.get(id=request.session['student_id'])
-        # ✅ إضافة هذا السطر علشان نجيب إعدادات المحافظ
         wallet_settings = WalletSettings.objects.first()
 
         if request.method == 'POST':
-            amount = request.POST.get('amount')
+            # ✅ منع الشحن نهائيًا - بس نرجع رسالة توضيحية
+            return render(request, 'students/wallet_topup.html', {
+                'student': student,
+                'wallet_settings': wallet_settings,
+                'error': '⚠️ الشحن الذاتي غير متاح حالياً. يرجى التواصل مع الإدارة لشحن الرصيد.',
+                'show_instructions': True  # علشان تفضل الإرشادات ظاهرة
+            })
 
-            if not amount:
-                return render(request, 'students/wallet_topup.html', {
-                    'student': student,
-                    'wallet_settings': wallet_settings,  # ✅ إضافة
-                    'error': 'يرجى إدخال المبلغ'
-                })
-
-            try:
-                amount_decimal = Decimal(amount)
-                if amount_decimal <= 0:
-                    return render(request, 'students/wallet_topup.html', {
-                        'student': student,
-                        'wallet_settings': wallet_settings,  # ✅ إضافة
-                        'error': 'المبلغ يجب أن يكون أكبر من الصفر'
-                    })
-
-                student.balance += amount_decimal
-                student.save()
-                return redirect('students:student_dashboard')
-
-            except InvalidOperation:
-                return render(request, 'students/wallet_topup.html', {
-                    'student': student,
-                    'wallet_settings': wallet_settings,  # ✅ إضافة
-                    'error': 'المبلغ غير صحيح'
-                })
-            except Exception as e:
-                return render(request, 'students/wallet_topup.html', {
-                    'student': student,
-                    'wallet_settings': wallet_settings,  # ✅ إضافة
-                    'error': f'حدث خطأ أثناء شحن الرصيد: {str(e)}'
-                })
-
-        # ✅ إضافة wallet_settings هنا أيضاً
+        # ✅ طلب GET - نعرض الصفحة عادي بالإرشادات
         return render(request, 'students/wallet_topup.html', {
             'student': student,
-            'wallet_settings': wallet_settings
+            'wallet_settings': wallet_settings,
+            'show_instructions': True
         })
 
     except Student.DoesNotExist:
@@ -219,6 +193,9 @@ def wallet_balance(request):
         return JsonResponse({'error': 'الطالب غير موجود'}, status=404)
     except Exception as e:
         return JsonResponse({'error': f'حدث خطأ: {str(e)}'}, status=500)
+
+
+
 
 def student_logout(request):
     request.session.flush()
